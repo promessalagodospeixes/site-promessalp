@@ -1,41 +1,49 @@
 import { useEffect, useRef, useState } from 'react'
+import {
+  LINKS, FOTOS_CAPA, FOTOS_FAMILIA, REELS, MENSAGENS,
+  MINISTERIOS, OPCOES_MINISTERIO, CELULAS, GALERIA,
+} from './config/site.js'
 
-const WHATS = 'https://wa.me/5521970250597'
-const AREA_MEMBROS = 'https://gestao.promessalagodospeixes.com.br'
-const INSTA = 'https://instagram.com/promessalagodospeixes'
-const EMAIL = 'mailto:iaplagodospeixes@gmail.com'
-const REEL = 'https://www.instagram.com/reel/DTGS5N5Dmaf/'
-const MAPS_Q = 'https://www.google.com/maps?q=Estrada+Austin-Queimados,+250,+Austin,+Nova+Igua%C3%A7u+-+RJ,+26086-295'
+const NAV = [
+  ['#novo', 'Primeira visita'], ['#sobre', 'Quem somos'], ['#videos', 'Vídeos'], ['#fotos', 'Fotos'],
+  ['#lideres', 'Liderança'], ['#mensagens', 'Mensagens'], ['#ministerios', 'Ministérios'],
+  ['#participe', 'Participe'], ['#contribua', 'Contribua'], ['#contato', 'Contato'],
+]
 
-const MINISTERIOS = [
-  { n: '01', nome: 'Louvor', desc: 'Adoração que conduz a igreja à presença de Deus, com equipe vocal e instrumental. Liderança do Pr. Gabriel Pereira, com Eclair Campos (instrumental) e Vitória Vicente (vocal).' },
-  { n: '02', nome: 'Escola Bíblica', desc: 'Todo sábado às 9h, com classes por faixa etária — da Nave (crianças) à classe de adultos. Palavra ensinada com profundidade e amor.' },
-  { n: '03', nome: 'Crianças e Família', desc: 'As crianças aprendem desde cedo a alegria de congregar. Na Escola Bíblica têm classes próprias; no culto, adoramos todos juntos, em família.' },
-  { n: '04', nome: 'Jovens e Adolescentes', desc: 'Classes bíblicas próprias, células durante a semana e um encontro mensal para viver a fé com a galera.' },
-  { n: '05', nome: 'Mulheres e Homens', desc: 'Encontros, reuniões e visitas — cuidado com os da fé e atenção especial a quem ainda está conhecendo Cristo.' },
-  { n: '06', nome: 'Café e Conexão', desc: 'Uma manhã por mês a igreja abre as portas para um café com a comunidade. Proximidade, escuta e acolhimento.' },
-  { n: '07', nome: 'Intercessão', desc: 'Orações semanais às terças-feiras, pela igreja e pela vizinhança. Todo pedido de oração é levado a essas reuniões.' },
-  { n: '08', nome: 'Sonoplastia e Comunicação', desc: 'Técnica, registros e conteúdo: preparando o ambiente do culto e levando o acolhimento da igreja pelas mídias.' },
+const NAV_MOBILE = [
+  ['#novo', 'Primeira visita'], ['#sobre', 'Quem somos'], ['#videos', 'Vídeos'], ['#fotos', 'Fotos'],
+  ['#lideres', 'Liderança'], ['#mensagens', 'Mensagens'], ['#ministerios', 'Ministérios'], ['#celulas', 'Células'],
+  ['#participe', 'Participe'], ['#contribua', 'Contribua'], ['#contato', 'Contato'],
 ]
 
 const HORARIOS = [
-  { dia: 'Sábado', hora: '9h', desc: 'Escola Bíblica — classes por idade' },
-  { dia: 'Sábado', hora: '10h30', desc: 'Culto da Família — até 12h' },
+  { dia: 'Sábado', hora: '9h', desc: 'Escola Bíblica' },
+  { dia: 'Sábado', hora: '10h30', desc: 'Culto da Família' },
   { dia: 'Domingo', hora: '18h', desc: 'Culto de Celebração' },
-  { dia: 'Na semana', hora: 'Células', desc: 'Nos lares · Oração às terças' },
+  { dia: 'Terça', hora: '19h30', desc: 'Reunião de oração' },
 ]
 
 const PASSOS = [
   { n: '01', t: 'Chegue no horário que der', d: 'O culto de sábado começa 10h30 e termina às 12h. Sem traje obrigatório, sem constrangimento.' },
   { n: '02', t: 'Traga sua família toda', d: 'As crianças têm classes por idade na Escola Bíblica; no culto, adoramos todos juntos — em família.' },
-  { n: '03', t: 'Templo acessível', d: 'Acesso e banheiros acessíveis. Se precisar de qualquer apoio, fale com a gente antes — a igreja se prepara para você.' },
+  { n: '03', t: 'Estrutura pensada para todos', d: 'Entrada e banheiros acessíveis. Se precisar de qualquer apoio, avise antes — a igreja se prepara para receber você.' },
 ]
 
-const AGENDA = [
-  { q1: 'Terça', q2: '19h30', t: 'Reunião de oração', d: 'Pela igreja e pela vizinhança — todo pedido é levado aqui' },
-  { q1: 'Semana', q2: 'Células', t: 'Encontros nos lares', d: 'Grupos pequenos de jovens e famílias — chame no WhatsApp para participar' },
-  { q1: 'Mensal', q2: 'Café', t: 'Café e Conexão', d: 'Uma manhã por mês de portas abertas para a comunidade de Austin' },
+const ABAS = [
+  { k: 'ministerio', rotulo: 'Quero servir' },
+  { k: 'celula', rotulo: 'Cadastrar célula' },
+  { k: 'oracao', rotulo: 'Pedido de oração' },
 ]
+
+const ASSUNTOS = {
+  ministerio: 'Site — candidatura a ministério',
+  celula: 'Site — cadastro de célula',
+  oracao: 'Site — pedido de oração',
+}
+
+function iniciais(nome) {
+  return nome.split(/\s+e\s+|\s+/).filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toUpperCase()
+}
 
 function Historia() {
   return (
@@ -71,43 +79,114 @@ function Historia() {
 
 export default function App() {
   const [pixCopiado, setPixCopiado] = useState(false)
-  const timerRef = useRef(null)
+  const [menuAberto, setMenuAberto] = useState(false)
+  const [capa, setCapa] = useState(0)
+  const [familia, setFamilia] = useState(0)
+  const [aba, setAba] = useState('ministerio')
+  const [envio, setEnvio] = useState('') // '' | 'enviando' | 'ok' | 'erro'
+  const pixTimer = useRef(null)
+  const capaTimer = useRef(null)
+  const refReels = useRef(null)
 
-  useEffect(() => () => clearTimeout(timerRef.current), [])
+  useEffect(() => {
+    capaTimer.current = setInterval(() => setCapa((c) => (c + 1) % FOTOS_CAPA.length), 6500)
+    return () => { clearInterval(capaTimer.current); clearTimeout(pixTimer.current) }
+  }, [])
+
+  const irCapa = (i) => {
+    clearInterval(capaTimer.current)
+    setCapa(((i % FOTOS_CAPA.length) + FOTOS_CAPA.length) % FOTOS_CAPA.length)
+  }
+  const irFamilia = (i) => setFamilia(((i % FOTOS_FAMILIA.length) + FOTOS_FAMILIA.length) % FOTOS_FAMILIA.length)
+
+  const rolarReels = (dir) => {
+    const el = refReels.current
+    if (el) el.scrollBy({ left: dir * Math.max(240, el.clientWidth * 0.7), behavior: 'smooth' })
+  }
 
   const copiarPix = () => {
     try { navigator.clipboard?.writeText('30228769000122') } catch (e) { /* sem clipboard */ }
     setPixCopiado(true)
-    clearTimeout(timerRef.current)
-    timerRef.current = setTimeout(() => setPixCopiado(false), 2400)
+    clearTimeout(pixTimer.current)
+    pixTimer.current = setTimeout(() => setPixCopiado(false), 2400)
   }
+
+  const irAba = (k) => { setAba(k); setEnvio(''); setMenuAberto(false) }
+
+  const enviarForm = async (e) => {
+    e.preventDefault()
+    const form = e.target
+    const dados = Object.fromEntries(new FormData(form).entries())
+    if (dados._gotcha) return // honeypot: robô preencheu, ignora
+    delete dados._gotcha
+    setEnvio('enviando')
+    try {
+      const r = await fetch('/api/participe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tipo: aba, assunto: ASSUNTOS[aba], campos: dados }),
+      })
+      if (!r.ok) throw new Error('falha')
+      setEnvio('ok')
+      form.reset()
+    } catch (err) {
+      setEnvio('erro')
+    }
+  }
+
+  const inp = (label, props = {}) => (
+    <label className="campo">
+      <span>{label}</span>
+      <input {...props} />
+    </label>
+  )
 
   return (
     <>
       <header className="topo">
-        <div className="topo-in">
+        <div className="topo-in headRow">
           <a href="#inicio" className="marca">
             <img src="/logo.png" alt="Promessa Lago dos Peixes" />
             <span className="marca-txt">
-              <span className="marca-nome">Promessa Lago dos Peixes</span>
-              <span className="marca-sub">Austin · Nova Iguaçu / RJ</span>
+              <span className="marca-nome brandName">Promessa Lago dos Peixes</span>
+              <span className="marca-sub brandSub">Austin · Nova Iguaçu / RJ</span>
             </span>
           </a>
-          <nav>
-            <a href="#novo">Primeira visita</a>
-            <a href="#sobre">Quem somos</a>
-            <a href="#videos">Vídeos</a>
-            <a href="#fotos">Fotos</a>
-            <a href="#ministerios">Ministérios</a>
-            <a href="#contribua">Contribua</a>
-            <a href="#contato">Contato</a>
-            <a href={AREA_MEMBROS} target="_blank" rel="noopener noreferrer" className="membros">Área de Membros</a>
+          <button
+            className="navBurger"
+            aria-label={menuAberto ? 'Fechar menu' : 'Abrir menu'}
+            aria-expanded={menuAberto}
+            onClick={() => setMenuAberto((v) => !v)}
+          >
+            <span></span><span></span><span className="curta"></span>
+          </button>
+          <nav className="navDesk">
+            {NAV.map(([href, rotulo]) => <a key={href} href={href}>{rotulo}</a>)}
+            <a href={LINKS.areaMembros} target="_blank" rel="noopener noreferrer" className="membros">Área de Membros</a>
           </nav>
         </div>
+        {menuAberto && (
+          <nav className="drawer">
+            <div className="drawer-in">
+              {NAV_MOBILE.map(([href, rotulo]) => (
+                <a key={href} href={href} onClick={() => setMenuAberto(false)}>{rotulo}</a>
+              ))}
+              <div className="drawer-ctas">
+                <a href={LINKS.faleConosco} target="_blank" rel="noopener noreferrer" onClick={() => setMenuAberto(false)} className="cta-azul">Falar no WhatsApp</a>
+                <a href={LINKS.areaMembros} target="_blank" rel="noopener noreferrer" onClick={() => setMenuAberto(false)} className="cta-grafite">Área de Membros</a>
+              </div>
+            </div>
+          </nav>
+        )}
       </header>
 
       <section id="inicio" className="hero">
-        <div className="hero-bg"><img src="/foto-comunidade.jpg" alt="Igreja em oração, uns pelos outros" /></div>
+        <div className="hero-camadas">
+          {FOTOS_CAPA.map((src, i) => (
+            <div key={src} className="hero-camada" style={{ backgroundImage: `url("${src}")`, opacity: i === capa ? 1 : 0 }}></div>
+          ))}
+        </div>
+        <div className="hero-scrim"></div>
         <div className="hero-in container">
           <div className="hero-badge">
             <span className="ponto"></span>
@@ -116,30 +195,51 @@ export default function App() {
           <h1>Aqui você não é visita. É <em>esperado</em>.</h1>
           <p className="hero-sub">Somos a Promessa Lago dos Peixes: uma igreja viva, jovem e de portas abertas, que existe para cuidar, amar e priorizar pessoas.</p>
           <div className="hero-cta">
-            <a href={WHATS} target="_blank" rel="noopener noreferrer" className="btn-azul">Sou novo aqui — falar no WhatsApp</a>
+            <a href={LINKS.faleConosco} target="_blank" rel="noopener noreferrer" className="btn-azul">Sou novo aqui — falar no WhatsApp</a>
             <a href="#videos" className="btn-vidro">▶ Ver a igreja por dentro</a>
           </div>
-          <div className="hero-horarios">
-            {HORARIOS.map((h, i) => (
-              <div className="h-item" key={i}>
-                <div className="h-dia">{h.dia}</div>
-                <div className="h-hora">{h.hora}</div>
-                <div className="h-desc">{h.desc}</div>
+          <div className="hero-base">
+            <div className="hero-horarios">
+              {HORARIOS.map((h, i) => (
+                <div className="h-item" key={i}>
+                  <div className="h-dia">{h.dia}</div>
+                  <div className="h-hora">{h.hora}</div>
+                  <div className="h-desc">{h.desc}</div>
+                </div>
+              ))}
+              <div className="h-item">
+                <div className="h-dia">Na semana</div>
+                <div className="h-hora">Células</div>
+                <div className="h-desc"><a href="#celulas">a mais próxima →</a></div>
               </div>
-            ))}
+            </div>
+            <div className="hero-controles">
+              <button onClick={() => irCapa(capa - 1)} aria-label="Foto anterior">‹</button>
+              <div className="pontos">
+                {FOTOS_CAPA.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => irCapa(i)}
+                    aria-label="Ver foto de capa"
+                    className={i === capa ? 'ativo' : ''}
+                  ></button>
+                ))}
+              </div>
+              <button onClick={() => irCapa(capa + 1)} aria-label="Próxima foto">›</button>
+            </div>
           </div>
         </div>
       </section>
 
       <section id="novo" className="sec">
         <div className="container duas-col">
-          <div className="novo-txt">
+          <div>
             <div className="chapeu">Primeira visita</div>
-            <h2 className="titulo">Venha como está. A gente cuida do resto.</h2>
-            <p>Ninguém precisa se encaixar num molde para entrar aqui. Se for sua primeira vez, avise a gente no WhatsApp: alguém vai te receber na porta, te apresentar a igreja e sentar com você.</p>
-            <div className="novo-botoes">
-              <a href={WHATS} target="_blank" rel="noopener noreferrer" className="btn-grafite">Falar com o Pr. Gabriel</a>
-              <a href={`${EMAIL}?subject=Pedido%20de%20ora%C3%A7%C3%A3o`} className="btn-ghost">Enviar pedido de oração</a>
+            <h2 className="titulo">Venha como está. Nós iremos caminhar com você.</h2>
+            <p className="par-grande">Ninguém precisa se encaixar num molde para entrar aqui. Se for sua primeira vez, avise a gente no WhatsApp: alguém vai te receber na porta, te apresentar a igreja e sentar com você.</p>
+            <div className="botoes">
+              <a href={LINKS.faleConosco} target="_blank" rel="noopener noreferrer" className="btn-grafite">Fale conosco</a>
+              <a href="#participe" onClick={() => irAba('oracao')} className="btn-ghost">Enviar pedido de oração</a>
             </div>
           </div>
           <div className="passos">
@@ -158,42 +258,66 @@ export default function App() {
 
       <section id="videos" className="sec sec-cinza">
         <div className="blob blob-tr"></div>
-        <div className="container">
+        <div className="container pos">
           <div className="cab-flex">
             <div>
               <div className="chapeu claro">Igreja em movimento</div>
-              <h2 className="titulo" style={{ maxWidth: '24ch', marginBottom: 0 }}>Dá uma olhada em como é o nosso domingo — antes de vir.</h2>
+              <h2 className="titulo" style={{ maxWidth: '24ch', marginBottom: 0 }}>Conheça um pouco da nossa igreja antes mesmo de vir.</h2>
             </div>
-            <a href={INSTA} target="_blank" rel="noopener noreferrer" className="btn-outline-claro">Ver tudo no Instagram</a>
+            <a href={LINKS.instagram} target="_blank" rel="noopener noreferrer" className="btn-outline-claro">Ver tudo no Instagram</a>
           </div>
-          <div className="videos-grid">
-            <a href={REEL} target="_blank" rel="noopener noreferrer" className="video-card video-destaque">
-              <img src="/video-poster-1.jpg" alt="Um domingo na Promessa" />
-              <div className="scrim"></div>
-              <div className="info">
-                <span className="video-play">▶</span>
-                <div>
-                  <div className="video-titulo">Um domingo na Promessa</div>
-                  <div className="video-sub">Reel · Instagram @promessalagodospeixes</div>
+          <div className="reels-barra">
+            <div className="reels-dica">
+              <span className="ponto-claro"></span>
+              Últimos reels · arraste para o lado
+            </div>
+            <div className="reels-setas">
+              <button onClick={() => rolarReels(-1)} aria-label="Voltar">‹</button>
+              <button onClick={() => rolarReels(1)} aria-label="Avançar">›</button>
+            </div>
+          </div>
+          <div className="trilhaReels" ref={refReels}>
+            {REELS.map((r, i) => (
+              <a key={i} href={r.url} target="_blank" rel="noopener noreferrer" className="reel-card">
+                <img src={r.poster} alt={r.titulo} loading="lazy" />
+                <div className="scrim"></div>
+                <span className="play">▶</span>
+                <div className="rodape">
+                  <div className="t">{r.titulo}</div>
+                  <div className="m">{r.meta}</div>
                 </div>
-              </div>
-            </a>
-            <div className="video-col">
-              <a href={INSTA} target="_blank" rel="noopener noreferrer" className="video-card video-mini">
-                <img src="/video-poster-2.jpg" alt="Louvor ao vivo" />
-                <div className="scrim"></div>
-                <div className="rotulo">▶ Louvor ao vivo</div>
               </a>
-              <a href={INSTA} target="_blank" rel="noopener noreferrer" className="video-card video-mini">
-                <img src="/video-poster-3.jpg" alt="Café e Conexão com a comunidade" />
-                <div className="scrim"></div>
-                <div className="rotulo">▶ Café e Conexão</div>
-              </a>
-            </div>
+            ))}
           </div>
-          <div className="faixa-info">
-            <span>Estamos preparando o canal no YouTube para as mensagens completas. Enquanto isso, os trechos saem primeiro no Instagram.</span>
-            <a href={INSTA} target="_blank" rel="noopener noreferrer">Seguir @promessalagodospeixes →</a>
+        </div>
+      </section>
+
+      <section id="mensagens" className="sec">
+        <div className="container">
+          <div className="cab-flex">
+            <div>
+              <div className="chapeu">Mensagens</div>
+              <h2 className="titulo" style={{ maxWidth: '22ch' }}>Pregações para ouvir durante a semana</h2>
+              <p className="apoio" style={{ maxWidth: '46ch' }}>Publicamos os trechos e as mensagens completas nas redes. Toque em qualquer uma para assistir.</p>
+            </div>
+            <a href={LINKS.pregacoes} target="_blank" rel="noopener noreferrer" className="btn-ghost">Ver todas as pregações</a>
+          </div>
+          <div className="msg-grid">
+            {MENSAGENS.map((m, i) => (
+              <a key={i} href={m.url} target="_blank" rel="noopener noreferrer" className="msg-card">
+                <span className="play-azul">▶</span>
+                <span className="txt">
+                  <span className="t">{m.titulo}</span>
+                  <span className="m">{m.meta}</span>
+                </span>
+              </a>
+            ))}
+          </div>
+          <div className="faixa-denominacao">
+            <span>Recursos da nossa denominação para estudar durante a semana:</span>
+            <a href="https://www.youtube.com/@tvvivapromessa" target="_blank" rel="noopener noreferrer">TV Viva Promessa</a>
+            <a href="https://promessistas.org/lb356/" target="_blank" rel="noopener noreferrer">Lições Bíblicas</a>
+            <a href="https://promessistas.org/noticias/" target="_blank" rel="noopener noreferrer">Notícias</a>
           </div>
         </div>
       </section>
@@ -206,22 +330,21 @@ export default function App() {
             <p className="apoio">Cada foto aqui é de um sábado, de uma célula, de um café com a vizinhança. Igreja é gente.</p>
           </div>
           <div className="galeria">
-            <div className="g-larga"><img src="/foto-batismo.jpg" alt="Batismo — vidas nascendo de novo" loading="lazy" /></div>
-            <div className="g-quad"><img src="/galeria-1.jpg" alt="Batismo na Promessa Lago dos Peixes" loading="lazy" /></div>
-            <div className="g-quad"><img src="/galeria-2.jpg" alt="Igreja reunida em celebração" loading="lazy" /></div>
-            <div className="g-quad"><img src="/galeria-3.jpg" alt="Vigília — noite de oração" loading="lazy" /></div>
-            <div className="g-quad"><img src="/galeria-4.jpg" alt="Comunhão entre os irmãos" loading="lazy" /></div>
-            <div className="g-larga"><img src="/galeria-ampla.jpg" alt="Igreja reunida no templo" loading="lazy" /></div>
+            {GALERIA.map((f, i) => (
+              <div key={i} className={f.larga ? 'g-larga' : 'g-quad'}>
+                <img src={f.src} alt={f.alt} loading="lazy" />
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       <section id="sobre" className="sec">
-        <div className="container duas-col" style={{ alignItems: 'start' }}>
-          <div className="sobre-txt">
+        <div className="container duas-col topo-alinhado">
+          <div>
             <div className="chapeu">Quem somos</div>
             <h2 className="titulo">Uma igreja que nasceu de um chamado dentro de um trem.</h2>
-            <p className="abertura">Em 1º de janeiro de 1988, o Presbítero Paulo Roberto ouviu de Deus: <em>“vá para a casa da tua mãe, que a minha luz tem que brilhar naquele lugar.”</em> Daquela sala nasceu a nossa igreja. Trinta e oito anos depois, a missão é a mesma.</p>
+            <p className="par-grande">Em 1º de janeiro de 1988, o Presbítero Paulo Roberto ouviu de Deus: <em className="citacao">“vá para a casa da tua mãe, que a minha luz tem que brilhar naquele lugar.”</em> Daquela sala nasceu a nossa igreja. Trinta e oito anos depois, a missão é a mesma.</p>
             <div className="pilares">
               <div className="pilar"><b>Cuidar</b><span>uns dos outros, de perto</span></div>
               <div className="pilar"><b>Amar</b><span>sem exigir molde</span></div>
@@ -246,6 +369,47 @@ export default function App() {
         </div>
       </section>
 
+      <section id="lideres" className="sec">
+        <div className="container">
+          <div className="chapeu">Conheça nossos líderes</div>
+          <div className="cab-flex" style={{ marginTop: 14 }}>
+            <h2 className="titulo" style={{ margin: 0, maxWidth: '20ch' }}>Quem caminha com você aqui</h2>
+            <p className="apoio">Gente de verdade, com nome e rosto. Se precisar de qualquer coisa, procure qualquer um deles no sábado.</p>
+          </div>
+          <div className="lideres-grid">
+            <div className="familia-carrossel">
+              {FOTOS_FAMILIA.map((f, i) => (
+                <div key={i} className="familia-foto" style={{ opacity: i === familia ? 1 : 0, pointerEvents: i === familia ? 'auto' : 'none' }}>
+                  <img src={f.src} alt={f.alt} loading="lazy" />
+                </div>
+              ))}
+              <div className="familia-controles">
+                <div className="pontos">
+                  {FOTOS_FAMILIA.map((_, i) => (
+                    <button key={i} onClick={() => irFamilia(i)} aria-label="Ver foto da família pastoral" className={i === familia ? 'ativo' : ''}></button>
+                  ))}
+                </div>
+                <div className="setas">
+                  <button onClick={() => irFamilia(familia - 1)} aria-label="Foto anterior">‹</button>
+                  <button onClick={() => irFamilia(familia + 1)} aria-label="Próxima foto">›</button>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div className="mini-chapeu">Família pastoral</div>
+              <h3 className="nome-pastor">Pr. Gabriel Azeredo Pereira</h3>
+              <div className="selos">
+                <span className="selo"><b>Esposa</b>Pâmela Pereira</span>
+                <span className="selo"><b>Filhos</b>Gabriel Filho, Nicolas e Zoe</span>
+              </div>
+              <p>Pastor da Promessa Lago dos Peixes. Conduz a igreja no ensino da Palavra e no louvor, e caminha de perto com cada família — do primeiro café ao batismo. A porta da casa pastoral está aberta para conversar, orar e ouvir.</p>
+              <p style={{ marginTop: 14 }}>A família pastoral vive a igreja junto com a igreja: no culto, na célula, na visita e no café da esquina.</p>
+              <a href={LINKS.faleConosco} target="_blank" rel="noopener noreferrer" className="btn-azul" style={{ marginTop: 22 }}>Conversar com o pastor</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="ministerios" className="sec sec-alt">
         <div className="container">
           <div className="chapeu">Como servimos</div>
@@ -261,41 +425,190 @@ export default function App() {
                   <h3>{m.nome}</h3>
                 </div>
                 <p>{m.desc}</p>
+                <div className="min-lider">
+                  <span className="avatar">{iniciais(m.lider)}</span>
+                  <span className="quem">
+                    <span className="rot">Liderança</span>
+                    <span className="nm">{m.lider}</span>
+                  </span>
+                </div>
               </div>
             ))}
+          </div>
+          <div id="faca-parte" className="faca-parte">
+            <div>
+              <div className="chapeu">Faça parte</div>
+              <h3>Tem um lugar guardado para você servir</h3>
+              <p>Não precisa ter experiência nem talento pronto — precisa querer. Preencha o cadastro dizendo com o que você gostaria de ajudar e a liderança do ministério entra em contato com você.</p>
+            </div>
+            <div className="fp-botoes">
+              <a href="#participe" onClick={() => irAba('ministerio')} className="fp-azul"><span>Quero me candidatar a um ministério</span><span>→</span></a>
+              <a href="#celulas" className="fp-claro"><span>Ver as células e participar</span><span>→</span></a>
+              <a href={LINKS.faleConosco} target="_blank" rel="noopener noreferrer" className="fp-ghost"><span>Prefiro falar com alguém antes</span><span>→</span></a>
+            </div>
           </div>
         </div>
       </section>
 
       <section id="agenda" className="sec-agenda">
-        <div className="container duas-col" style={{ alignItems: 'center' }}>
-          <div className="agenda-txt">
+        <div className="container duas-col centro-alinhado">
+          <div>
             <div className="chapeu">Ritmo da igreja</div>
-            <h2 className="titulo">Sempre tem algo acontecendo aqui</h2>
-            <p>Além dos cultos, a semana tem célula nos lares, oração às terças e um encontro por mês com a comunidade. A agenda completa é publicada no Instagram.</p>
+            <h2 className="titulo agenda-titulo">Sempre tem algo acontecendo aqui</h2>
+            <p className="par-medio">Além dos cultos, a semana tem célula nos lares, oração às terças e um encontro por mês com a comunidade. A agenda completa é publicada no Instagram.</p>
           </div>
           <div className="agenda-col">
-            {AGENDA.map((a, i) => (
-              <div className="agenda-item" key={i}>
-                <div className="agenda-quando">
-                  <div className="q1">{a.q1}</div>
-                  <div className="q2">{a.q2}</div>
+            <div className="agenda-item">
+              <div className="agenda-quando"><div className="q1">Terça</div><div className="q2">19h30</div></div>
+              <div className="agenda-div"></div>
+              <div className="agenda-oq"><b>Reunião de oração</b><span>Pela igreja e pela vizinhança — todo pedido é levado aqui</span></div>
+            </div>
+            <div className="agenda-item">
+              <div className="agenda-quando"><div className="q1">Semana</div><div className="q2">Células</div></div>
+              <div className="agenda-div"></div>
+              <div className="agenda-oq">
+                <b>Encontros nos lares</b>
+                <span>Adultos, jovens e crianças reunidos toda semana para compartilhar a vida e aprender mais sobre Jesus. Seja cuidado — e aprenda a cuidar de outras pessoas.</span>
+                <a href="#celulas">Conheça nossas células →</a>
+              </div>
+            </div>
+            <div className="agenda-item">
+              <div className="agenda-quando"><div className="q1">Mensal</div><div className="q2">Café</div></div>
+              <div className="agenda-div"></div>
+              <div className="agenda-oq"><b>Café e Conexão</b><span>Uma manhã por mês de portas abertas para a comunidade de Lago dos Peixes, em Austin</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="celulas" className="sec sec-alt">
+        <div className="container">
+          <div className="chapeu">Células nos lares</div>
+          <div className="cab-flex" style={{ marginTop: 14 }}>
+            <h2 className="titulo" style={{ margin: 0, maxWidth: '20ch' }}>Encontre a célula mais perto de você</h2>
+            <p className="apoio" style={{ maxWidth: '42ch' }}>Adultos, jovens e crianças reunidos toda semana para compartilhar a vida e aprender mais sobre Jesus. Chegue sem avisar — você vai ser recebido.</p>
+          </div>
+          <div className="cel-grid">
+            {CELULAS.map((c, i) => (
+              <div className="cel-card" key={i}>
+                <div className="cel-head">
+                  <h3>{c.nome}</h3>
+                  <span className="cel-publico">{c.publico}</span>
                 </div>
-                <div className="agenda-div"></div>
-                <div className="agenda-oq"><b>{a.t}</b><span>{a.d}</span></div>
+                <div className="cel-linhas">
+                  <div><span className="rot">Quando</span><span className="forte">{c.horario}</span></div>
+                  <div><span className="rot">Onde</span><span>{c.endereco}</span></div>
+                  <div><span className="rot">Anfitrião</span><span>{c.lider}</span></div>
+                </div>
+                <a href={c.mapa} target="_blank" rel="noopener noreferrer" className="cel-mapa">Ver no mapa →</a>
               </div>
             ))}
           </div>
+          <div className="cel-cta">
+            <a href="#participe" onClick={() => irAba('celula')} className="btn-azul">Cadastrar uma célula</a>
+            <span>É líder de célula? Cadastre os dados e ela aparece aqui no site.</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="participe" className="sec">
+        <div className="container-form">
+          <div className="participe-cab">
+            <div className="chapeu">Participe</div>
+            <h2 className="titulo">Fale com a igreja por aqui</h2>
+            <p>Preencha e a mensagem chega direto no e-mail da igreja. Respondemos em até dois dias.</p>
+          </div>
+          <div className="abas">
+            {ABAS.map((a) => (
+              <button key={a.k} type="button" onClick={() => irAba(a.k)} className={aba === a.k ? 'ativa' : ''}>{a.rotulo}</button>
+            ))}
+          </div>
+          {envio === 'ok' ? (
+            <div className="form-ok">
+              <div className="icone">✓</div>
+              <h3>Mensagem enviada!</h3>
+              <p>{aba === 'oracao'
+                ? 'Seu pedido chegou à igreja e será levado na reunião de oração de terça-feira.'
+                : 'Seu cadastro chegou ao e-mail da igreja. Entraremos em contato em até dois dias.'}</p>
+              <button type="button" onClick={() => setEnvio('')} className="btn-ghost">Enviar outra mensagem</button>
+            </div>
+          ) : (
+            <form onSubmit={enviarForm} className="form-card">
+              <input type="text" name="_gotcha" tabIndex="-1" autoComplete="off" className="hp" aria-hidden="true" />
+              {aba === 'ministerio' && (
+                <>
+                  <div className="linha-2">
+                    {inp('Seu nome', { name: 'Nome', required: true, placeholder: 'Nome completo' })}
+                    {inp('WhatsApp', { name: 'WhatsApp', required: true, placeholder: '(21) 90000-0000' })}
+                  </div>
+                  <label className="campo">
+                    <span>Ministério em que quero servir</span>
+                    <select name="Ministério" required defaultValue="">
+                      <option value="" disabled>Selecione um ministério</option>
+                      {OPCOES_MINISTERIO.map((o) => <option key={o} value={o}>{o}</option>)}
+                    </select>
+                  </label>
+                  <label className="campo">
+                    <span>Conte um pouco sobre você</span>
+                    <textarea name="Mensagem" rows="4" placeholder="Experiência, disponibilidade, o que gosta de fazer…"></textarea>
+                  </label>
+                </>
+              )}
+              {aba === 'celula' && (
+                <>
+                  <div className="linha-2">
+                    {inp('Nome da célula', { name: 'Nome da célula', required: true, placeholder: 'Ex.: Célula Vida Nova' })}
+                    {inp('Líder / anfitrião', { name: 'Líder', required: true, placeholder: 'Quem recebe na casa' })}
+                  </div>
+                  {inp('Endereço completo', { name: 'Endereço', required: true, placeholder: 'Rua, número, bairro, ponto de referência' })}
+                  <div className="linha-3">
+                    {inp('Dia e horário', { name: 'Dia e horário', required: true, placeholder: 'Ex.: quinta, 19h30' })}
+                    {inp('Público', { name: 'Público', placeholder: 'Famílias, jovens, crianças…' })}
+                    {inp('WhatsApp de contato', { name: 'WhatsApp', required: true, placeholder: '(21) 90000-0000' })}
+                  </div>
+                  <label className="campo">
+                    <span>Observações</span>
+                    <textarea name="Observações" rows="3" placeholder="Alguma informação que ajude quem vai visitar"></textarea>
+                  </label>
+                </>
+              )}
+              {aba === 'oracao' && (
+                <>
+                  <div className="linha-2">
+                    {inp('Seu nome (opcional)', { name: 'Nome', placeholder: 'Pode ser anônimo' })}
+                    {inp('Contato para retorno (opcional)', { name: 'Contato', placeholder: 'WhatsApp ou e-mail' })}
+                  </div>
+                  <label className="campo">
+                    <span>Seu pedido de oração</span>
+                    <textarea name="Pedido" required rows="5" placeholder="Escreva com liberdade. A equipe de intercessão leva o seu pedido nas reuniões de terça."></textarea>
+                  </label>
+                  <label className="check">
+                    <input type="checkbox" name="Pedido confidencial" value="Sim" />
+                    <span>Prefiro que o pedido fique só com o pastor e a equipe de intercessão.</span>
+                  </label>
+                </>
+              )}
+              <div className="form-rodape">
+                <span className="lgpd">Ao enviar, seus dados vão apenas para o e-mail da igreja. Não compartilhamos com ninguém.</span>
+                <button type="submit" disabled={envio === 'enviando'}>
+                  {envio === 'enviando' ? 'Enviando…' : (aba === 'oracao' ? 'Enviar pedido' : 'Enviar cadastro')}
+                </button>
+              </div>
+              {envio === 'erro' && (
+                <p className="form-erro">Não conseguimos enviar agora. Tente de novo em instantes — ou <a href={LINKS.faleConosco} target="_blank" rel="noopener noreferrer">fale com a gente no WhatsApp</a>.</p>
+              )}
+            </form>
+          )}
         </div>
       </section>
 
       <section id="contribua" className="sec sec-cinza">
         <div className="blob blob-bl"></div>
-        <div className="container duas-col" style={{ alignItems: 'center' }}>
-          <div className="contribua-txt">
+        <div className="container duas-col centro-alinhado pos">
+          <div>
             <div className="chapeu claro">Generosidade</div>
             <h2 className="titulo" style={{ maxWidth: '20ch' }}>Contribua com esta obra</h2>
-            <p>Dízimos e ofertas são atos voluntários de amor e adoração. Cada recurso é investido com responsabilidade: no cuidado do templo, nas missões local e externa, no auxílio às necessidades dos irmãos, no apoio à família pastoral e no cuidado de outras igrejas.</p>
+            <p className="par-claro">Dízimos e ofertas são atos voluntários de amor e adoração. Cada recurso é investido com responsabilidade: no cuidado do templo, nas missões local e externa, no auxílio às necessidades dos irmãos, no apoio à família pastoral e no cuidado de outras igrejas.</p>
           </div>
           <div className="pix-card">
             <div className="pix-rotulo">PIX · CNPJ da igreja</div>
@@ -303,16 +616,17 @@ export default function App() {
             <button type="button" className="pix-btn" onClick={copiarPix}>
               {pixCopiado ? 'Chave PIX copiada' : 'Copiar chave PIX'}
             </button>
+            <a href={LINKS.tesouraria} target="_blank" rel="noopener noreferrer" className="pix-tesouraria">Enviar comprovante à tesouraria</a>
             <div className="pix-aviso">
               <span className="seta">↗</span>
-              <span>Depois de contribuir, envie o comprovante para o WhatsApp da tesouraria — assim o registro da sua contribuição fica certinho.</span>
+              <span>Depois de contribuir, envie o comprovante para a tesouraria — assim o registro da sua contribuição fica certinho.</span>
             </div>
           </div>
         </div>
       </section>
 
       <section id="contato" className="sec">
-        <div className="container duas-col" style={{ alignItems: 'start' }}>
+        <div className="container duas-col topo-alinhado">
           <div>
             <div className="chapeu">Venha nos visitar</div>
             <h2 className="titulo" style={{ marginBottom: 22 }}>Onde estamos</h2>
@@ -321,28 +635,33 @@ export default function App() {
                 <div className="rotulo-mini">Endereço</div>
                 <div className="end">Estrada Austin-Queimados, 250</div>
                 <div className="cid">Austin, Nova Iguaçu / RJ — CEP 26086-295</div>
-                <div className="ref">Mercado do Beto na esquina · ao lado da Águas do Rio · templo e banheiros acessíveis</div>
-                <a href={MAPS_Q} target="_blank" rel="noopener noreferrer" className="rota">Abrir rota no Google Maps →</a>
+                <div className="ref">Referência: Mercado do Beto na esquina, ao lado da Águas do Rio.</div>
+                <div className="selos-acesso">
+                  <span>Entrada acessível</span>
+                  <span>Banheiros acessíveis</span>
+                  <span>Estacionamento na rua</span>
+                </div>
+                <a href={LINKS.maps} target="_blank" rel="noopener noreferrer" className="rota">Abrir rota no Google Maps →</a>
               </div>
               <div className="contato-links">
-                <a href={WHATS} target="_blank" rel="noopener noreferrer" className="card-link">
-                  <div className="rotulo-mini">WhatsApp do pastor</div>
-                  <div className="v">(21) 97025-0597</div>
+                <a href={LINKS.faleConosco} target="_blank" rel="noopener noreferrer" className="card-link">
+                  <div className="rotulo-mini">WhatsApp</div>
+                  <div className="v">Fale conosco →</div>
                 </a>
-                <a href={EMAIL} className="card-link">
+                <a href={LINKS.email} className="card-link">
                   <div className="rotulo-mini">E-mail</div>
-                  <div className="v">iaplagodospeixes@gmail.com</div>
+                  <div className="v">Escrever para a igreja →</div>
                 </a>
-                <a href={INSTA} target="_blank" rel="noopener noreferrer" className="card-link">
-                  <div className="rotulo-mini">Redes</div>
-                  <div className="v">@promessalagodospeixes</div>
+                <a href={LINKS.instagram} target="_blank" rel="noopener noreferrer" className="card-link">
+                  <div className="rotulo-mini">Instagram</div>
+                  <div className="v">Seguir @promessalagodospeixes →</div>
                 </a>
               </div>
             </div>
           </div>
           <div className="mapa">
             <iframe
-              src="https://www.google.com/maps?q=Estrada+Austin-Queimados,+250,+Austin,+Nova+Igua%C3%A7u+-+RJ,+26086-295&output=embed"
+              src={LINKS.mapsEmbed}
               title="Mapa — Promessa Lago dos Peixes"
               loading="lazy"
               allowFullScreen
@@ -364,15 +683,19 @@ export default function App() {
                 <div className="t">Site</div>
                 <a href="#novo">Primeira visita</a>
                 <a href="#sobre">Quem somos</a>
-                <a href="#ministerios">Ministérios</a>
+                <a href="#lideres">Liderança</a>
+                <a href="#ministerios">Ministérios e Faça parte</a>
+                <a href="#mensagens">Mensagens</a>
+                <a href="#celulas">Células</a>
+                <a href="#participe">Participe</a>
                 <a href="#contribua">Contribua</a>
               </div>
               <div className="foot-col">
                 <div className="t">Links</div>
-                <a href={INSTA} target="_blank" rel="noopener noreferrer">Instagram local</a>
+                <a href={LINKS.instagram} target="_blank" rel="noopener noreferrer">Instagram</a>
                 <a href="https://promessistas.org/" target="_blank" rel="noopener noreferrer">Promessistas Brasil</a>
                 <a href="https://instagram.com/promessistas" target="_blank" rel="noopener noreferrer">@promessistas</a>
-                <a href={AREA_MEMBROS} target="_blank" rel="noopener noreferrer">Área de Membros</a>
+                <a href={LINKS.areaMembros} target="_blank" rel="noopener noreferrer">Área de Membros</a>
               </div>
             </div>
           </div>
