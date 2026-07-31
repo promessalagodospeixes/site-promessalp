@@ -1,5 +1,5 @@
 const WHATS_PASTOR = 'https://wa.me/5521970250597'
-const AREA_MEMBROS = 'https://gestao-lp.vercel.app'
+const AREA_MEMBROS = 'https://gestao.promessalagodospeixes.com.br'
 const INSTA = 'https://instagram.com/promessalagodospeixes'
 const EMAIL = 'mailto:iaplagodospeixes@gmail.com'
 const MAPA_EMBED = 'https://www.google.com/maps?q=Estrada+Austin-Queimados,+250,+Austin,+Nova+Igua%C3%A7u+-+RJ,+26086-295&output=embed'
