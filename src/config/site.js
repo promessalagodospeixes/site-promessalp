@@ -1,45 +1,59 @@
-// Configuração central do site — edite links, listas e dados aqui.
+// Configuração do site. Os PADROES abaixo são usados até o carregamento
+// do que foi salvo no editor "Site Público" do sistema de gestão (Supabase).
 
-export const LINKS = {
-  faleConosco: 'https://wa.me/5521970250597?text=' + encodeURIComponent('Olá! Vim pelo site da Promessa Lago dos Peixes.'),
-  tesouraria: 'https://wa.me/5521982936289?text=' + encodeURIComponent('Olá! Segue o comprovante da minha contribuição.'),
-  instagram: 'https://instagram.com/promessalagodospeixes',
-  pregacoes: 'https://instagram.com/promessalagodospeixes',
-  email: 'mailto:iaplagodospeixes@gmail.com',
-  areaMembros: 'https://gestao.promessalagodospeixes.com.br',
-  maps: 'https://www.google.com/maps?q=Estrada+Austin-Queimados,+250,+Austin,+Nova+Igua%C3%A7u+-+RJ,+26086-295',
-  mapsEmbed: 'https://www.google.com/maps?q=Estrada+Austin-Queimados,+250,+Austin,+Nova+Igua%C3%A7u+-+RJ,+26086-295&output=embed',
+const SUPABASE_URL = 'https://mynektdohwpzfbmgfunp.supabase.co'
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15bmVrdGRvaHdwemZibWdmdW5wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NTcwMjQsImV4cCI6MjA5NjMzMzAyNH0.mhQIXbVgWkpVxvcOXs80KIoqSphde9juPLlZJJrkOhs'
+
+const zap = (n, msg) => `https://wa.me/${n}?text=${encodeURIComponent(msg)}`
+
+export const PADROES = {
+  LINKS: {
+    faleConosco: zap('5521970250597', 'Olá! Vim pelo site da Promessa Lago dos Peixes.'),
+    tesouraria: zap('5521982936289', 'Olá! Segue o comprovante da minha contribuição.'),
+    instagram: 'https://instagram.com/promessalagodospeixes',
+    pregacoes: 'https://instagram.com/promessalagodospeixes',
+    email: 'mailto:iaplagodospeixes@gmail.com',
+    areaMembros: 'https://gestao.promessalagodospeixes.com.br',
+    maps: 'https://www.google.com/maps?q=Estrada+Austin-Queimados,+250,+Austin,+Nova+Igua%C3%A7u+-+RJ,+26086-295',
+    mapsEmbed: 'https://www.google.com/maps?q=Estrada+Austin-Queimados,+250,+Austin,+Nova+Igua%C3%A7u+-+RJ,+26086-295&output=embed',
+  },
+  FOTOS_CAPA: ['/foto-comunidade.jpg', '/foto-batismo.jpg'],
+  FOTOS_FAMILIA: [
+    { src: '/foto-comunidade.jpg', alt: 'Família pastoral' },
+    { src: '/foto-batismo.jpg', alt: 'Pastor com a igreja no culto' },
+    { src: '/galeria-4.jpg', alt: 'Família pastoral numa célula' },
+    { src: '/galeria-ampla.jpg', alt: 'Pastor com a comunidade' },
+  ],
+  REELS: [
+    { url: 'https://www.instagram.com/reel/DTGS5N5Dmaf/', titulo: 'Um encontro na Promessa', meta: 'Reel · culto de celebração', poster: '/video-poster-1.jpg' },
+    { url: 'https://instagram.com/promessalagodospeixes', titulo: 'Louvor ao vivo', meta: 'Reel · equipe de louvor', poster: '/video-poster-2.jpg' },
+    { url: 'https://instagram.com/promessalagodospeixes', titulo: 'Café e Conexão', meta: 'Reel · comunidade', poster: '/video-poster-3.jpg' },
+    { url: 'https://instagram.com/promessalagodospeixes', titulo: 'Escola Bíblica', meta: 'Reel · sábado, 9h', poster: '/galeria-1.jpg' },
+    { url: 'https://instagram.com/promessalagodospeixes', titulo: 'Células nos lares', meta: 'Reel · durante a semana', poster: '/galeria-2.jpg' },
+    { url: 'https://instagram.com/promessalagodospeixes', titulo: 'Batismos', meta: 'Reel · vidas transformadas', poster: '/foto-batismo.jpg' },
+  ],
+  MENSAGENS: [
+    { url: 'https://instagram.com/promessalagodospeixes', titulo: 'Onde começa uma igreja?', meta: 'Pr. Gabriel Pereira · Atos 2' },
+    { url: 'https://instagram.com/promessalagodospeixes', titulo: 'Cuidar, amar e priorizar pessoas', meta: 'Pr. Gabriel Pereira · série da missão' },
+    { url: 'https://instagram.com/promessalagodospeixes', titulo: 'A luz que precisa brilhar naquele lugar', meta: 'Culto da Família · sábado' },
+    { url: 'https://instagram.com/promessalagodospeixes', titulo: 'Fé que caminha junto', meta: 'Culto de Celebração · domingo' },
+    { url: 'https://instagram.com/promessalagodospeixes', titulo: 'Generosidade que transborda', meta: 'Culto da Família · sábado' },
+    { url: 'https://instagram.com/promessalagodospeixes', titulo: 'A igreja que Jesus edifica', meta: 'Mateus 16 · série Atos' },
+  ],
+  CELULAS: [
+    { nome: 'Célula Lago dos Peixes', publico: 'Famílias', horario: 'Quinta, 19h30', endereco: 'Rua Sogerim, 93 — Lago dos Peixes, Austin', lider: 'Família Botelho', mapa: 'https://www.google.com/maps?q=Rua+Sogerim,+93,+Austin,+Nova+Igua%C3%A7u' },
+    { nome: 'Célula Jovens Promessa', publico: 'Jovens', horario: 'Sexta, 20h', endereco: 'Estrada Austin-Queimados, 250 — Austin', lider: 'Liderança de jovens', mapa: 'https://www.google.com/maps?q=Estrada+Austin-Queimados,+250,+Austin,+Nova+Igua%C3%A7u' },
+    { nome: 'Célula Antônio Cunha', publico: 'Adultos', horario: 'Quarta, 19h30', endereco: 'Rua Antônio Cunha, 202 — Austin', lider: 'A confirmar', mapa: 'https://www.google.com/maps?q=Rua+Ant%C3%B4nio+Cunha,+202,+Austin,+Nova+Igua%C3%A7u' },
+  ],
+  GALERIA: [
+    { src: '/foto-batismo.jpg', alt: 'Batismo — vidas nascendo de novo', larga: true },
+    { src: '/galeria-1.jpg', alt: 'Batismo na Promessa Lago dos Peixes' },
+    { src: '/galeria-2.jpg', alt: 'Igreja reunida em celebração' },
+    { src: '/galeria-3.jpg', alt: 'Vigília — noite de oração' },
+    { src: '/galeria-4.jpg', alt: 'Comunhão entre os irmãos' },
+    { src: '/galeria-ampla.jpg', alt: 'Igreja reunida no templo', larga: true },
+  ],
 }
-
-// Fotos do carrossel do topo — adicione URLs aqui para entrar na capa.
-export const FOTOS_CAPA = ['/foto-comunidade.jpg', '/foto-batismo.jpg']
-
-// Carrossel da família pastoral (4 fotos).
-export const FOTOS_FAMILIA = [
-  { src: '/foto-comunidade.jpg', alt: 'Família pastoral' },
-  { src: '/foto-batismo.jpg', alt: 'Pastor com a igreja no culto' },
-  { src: '/galeria-4.jpg', alt: 'Família pastoral numa célula' },
-  { src: '/galeria-ampla.jpg', alt: 'Pastor com a comunidade' },
-]
-
-export const REELS = [
-  { url: 'https://www.instagram.com/reel/DTGS5N5Dmaf/', titulo: 'Um encontro na Promessa', meta: 'Reel · culto de celebração', poster: '/video-poster-1.jpg' },
-  { url: 'https://instagram.com/promessalagodospeixes', titulo: 'Louvor ao vivo', meta: 'Reel · equipe de louvor', poster: '/video-poster-2.jpg' },
-  { url: 'https://instagram.com/promessalagodospeixes', titulo: 'Café e Conexão', meta: 'Reel · comunidade', poster: '/video-poster-3.jpg' },
-  { url: 'https://instagram.com/promessalagodospeixes', titulo: 'Escola Bíblica', meta: 'Reel · sábado, 9h', poster: '/galeria-1.jpg' },
-  { url: 'https://instagram.com/promessalagodospeixes', titulo: 'Células nos lares', meta: 'Reel · durante a semana', poster: '/galeria-2.jpg' },
-  { url: 'https://instagram.com/promessalagodospeixes', titulo: 'Batismos', meta: 'Reel · vidas transformadas', poster: '/foto-batismo.jpg' },
-]
-
-// Pregações: cole aqui o link de cada mensagem (Instagram, YouTube, Drive…)
-export const MENSAGENS = [
-  { url: 'https://instagram.com/promessalagodospeixes', titulo: 'Onde começa uma igreja?', meta: 'Pr. Gabriel Pereira · Atos 2' },
-  { url: 'https://instagram.com/promessalagodospeixes', titulo: 'Cuidar, amar e priorizar pessoas', meta: 'Pr. Gabriel Pereira · série da missão' },
-  { url: 'https://instagram.com/promessalagodospeixes', titulo: 'A luz que precisa brilhar naquele lugar', meta: 'Culto da Família · sábado' },
-  { url: 'https://instagram.com/promessalagodospeixes', titulo: 'Fé que caminha junto', meta: 'Culto de Celebração · domingo' },
-  { url: 'https://instagram.com/promessalagodospeixes', titulo: 'Generosidade que transborda', meta: 'Culto da Família · sábado' },
-  { url: 'https://instagram.com/promessalagodospeixes', titulo: 'A igreja que Jesus edifica', meta: 'Mateus 16 · série Atos' },
-]
 
 export const MINISTERIOS = [
   { n: '01', nome: 'Louvor', lider: 'Eclair Campos e Vitória Vicente', desc: 'Adoração que conduz a igreja à presença de Deus, com equipe vocal e instrumental. Liderança do Pr. Gabriel Pereira, com Eclair Campos (instrumental) e Vitória Vicente (vocal).' },
@@ -60,17 +74,56 @@ export const OPCOES_MINISTERIO = [
   'Ainda não sei — me ajudem a escolher',
 ]
 
-export const CELULAS = [
-  { nome: 'Célula Lago dos Peixes', publico: 'Famílias', horario: 'Quinta, 19h30', endereco: 'Rua Sogerim, 93 — Lago dos Peixes, Austin', lider: 'Família Botelho', mapa: 'https://www.google.com/maps?q=Rua+Sogerim,+93,+Austin,+Nova+Igua%C3%A7u' },
-  { nome: 'Célula Jovens Promessa', publico: 'Jovens', horario: 'Sexta, 20h', endereco: 'Estrada Austin-Queimados, 250 — Austin', lider: 'Liderança de jovens', mapa: 'https://www.google.com/maps?q=Estrada+Austin-Queimados,+250,+Austin,+Nova+Igua%C3%A7u' },
-  { nome: 'Célula Antônio Cunha', publico: 'Adultos', horario: 'Quarta, 19h30', endereco: 'Rua Antônio Cunha, 202 — Austin', lider: 'A confirmar', mapa: 'https://www.google.com/maps?q=Rua+Ant%C3%B4nio+Cunha,+202,+Austin,+Nova+Igua%C3%A7u' },
-]
+// Busca o que foi salvo no editor do sistema de gestão e mescla nos padrões.
+export async function carregarConfig() {
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/site_config?id=eq.1&select=config`, {
+      headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` },
+    })
+    if (!r.ok) return PADROES
+    const [linha] = await r.json()
+    const c = linha?.config
+    if (!c || typeof c !== 'object') return PADROES
 
-export const GALERIA = [
-  { src: '/foto-batismo.jpg', alt: 'Batismo — vidas nascendo de novo', larga: true },
-  { src: '/galeria-1.jpg', alt: 'Batismo na Promessa Lago dos Peixes' },
-  { src: '/galeria-2.jpg', alt: 'Igreja reunida em celebração' },
-  { src: '/galeria-3.jpg', alt: 'Vigília — noite de oração' },
-  { src: '/galeria-4.jpg', alt: 'Comunhão entre os irmãos' },
-  { src: '/galeria-ampla.jpg', alt: 'Igreja reunida no templo', larga: true },
-]
+    const out = { ...PADROES }
+    const l = c.links || {}
+    out.LINKS = {
+      ...PADROES.LINKS,
+      ...(l.whatsPastor ? { faleConosco: zap(l.whatsPastor, 'Olá! Vim pelo site da Promessa Lago dos Peixes.') } : {}),
+      ...(l.whatsTesouraria ? { tesouraria: zap(l.whatsTesouraria, 'Olá! Segue o comprovante da minha contribuição.') } : {}),
+      ...(l.instagram ? { instagram: l.instagram } : {}),
+      ...(l.pregacoes ? { pregacoes: l.pregacoes } : {}),
+      ...(l.email ? { email: `mailto:${l.email}` } : {}),
+    }
+    if (Array.isArray(c.fotosCapa) && c.fotosCapa.length) out.FOTOS_CAPA = c.fotosCapa
+    if (Array.isArray(c.familia) && c.familia.length) {
+      out.FOTOS_FAMILIA = c.familia.map((src, i) => ({ src, alt: `Família pastoral — foto ${i + 1}` }))
+    }
+    if (Array.isArray(c.galeria) && c.galeria.length) {
+      out.GALERIA = c.galeria.map((src, i) => ({
+        src,
+        alt: 'Promessa Lago dos Peixes',
+        larga: i === 0 || i === c.galeria.length - 1,
+      }))
+    }
+    if (Array.isArray(c.reels) && c.reels.length) {
+      out.REELS = c.reels.filter((r2) => r2.titulo || r2.url).map((r2) => ({
+        url: r2.url || out.LINKS.instagram, titulo: r2.titulo || 'Reel', meta: r2.meta || '', poster: r2.poster || '',
+      }))
+    }
+    if (Array.isArray(c.mensagens) && c.mensagens.length) {
+      out.MENSAGENS = c.mensagens.filter((m) => m.titulo).map((m) => ({
+        url: m.url || out.LINKS.pregacoes, titulo: m.titulo, meta: m.meta || '',
+      }))
+    }
+    if (Array.isArray(c.celulas) && c.celulas.length) {
+      out.CELULAS = c.celulas.filter((ce) => ce.nome).map((ce) => ({
+        ...ce,
+        mapa: ce.mapa || `https://www.google.com/maps?q=${encodeURIComponent(ce.endereco || 'Austin, Nova Iguaçu')}`,
+      }))
+    }
+    return out
+  } catch (e) {
+    return PADROES
+  }
+}

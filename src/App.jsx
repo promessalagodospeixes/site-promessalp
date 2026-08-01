@@ -1,8 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import {
-  LINKS, FOTOS_CAPA, FOTOS_FAMILIA, REELS, MENSAGENS,
-  MINISTERIOS, OPCOES_MINISTERIO, CELULAS, GALERIA,
-} from './config/site.js'
+import { PADROES, carregarConfig, MINISTERIOS, OPCOES_MINISTERIO } from './config/site.js'
 
 const NAV = [
   ['#novo', 'Primeira visita'], ['#sobre', 'Quem somos'], ['#videos', 'Vídeos'], ['#fotos', 'Fotos'],
@@ -84,20 +81,26 @@ export default function App() {
   const [familia, setFamilia] = useState(0)
   const [aba, setAba] = useState('ministerio')
   const [envio, setEnvio] = useState('') // '' | 'enviando' | 'ok' | 'erro'
+  const [S, setS] = useState(PADROES)
   const pixTimer = useRef(null)
   const capaTimer = useRef(null)
   const refReels = useRef(null)
 
   useEffect(() => {
-    capaTimer.current = setInterval(() => setCapa((c) => (c + 1) % FOTOS_CAPA.length), 6500)
-    return () => { clearInterval(capaTimer.current); clearTimeout(pixTimer.current) }
+    carregarConfig().then(setS)
+    return () => clearTimeout(pixTimer.current)
   }, [])
+
+  useEffect(() => {
+    capaTimer.current = setInterval(() => setCapa((c) => (c + 1) % S.FOTOS_CAPA.length), 6500)
+    return () => clearInterval(capaTimer.current)
+  }, [S])
 
   const irCapa = (i) => {
     clearInterval(capaTimer.current)
-    setCapa(((i % FOTOS_CAPA.length) + FOTOS_CAPA.length) % FOTOS_CAPA.length)
+    setCapa(((i % S.FOTOS_CAPA.length) + S.FOTOS_CAPA.length) % S.FOTOS_CAPA.length)
   }
-  const irFamilia = (i) => setFamilia(((i % FOTOS_FAMILIA.length) + FOTOS_FAMILIA.length) % FOTOS_FAMILIA.length)
+  const irFamilia = (i) => setFamilia(((i % S.FOTOS_FAMILIA.length) + S.FOTOS_FAMILIA.length) % S.FOTOS_FAMILIA.length)
 
   const rolarReels = (dir) => {
     const el = refReels.current
@@ -162,7 +165,7 @@ export default function App() {
           </button>
           <nav className="navDesk">
             {NAV.map(([href, rotulo]) => <a key={href} href={href}>{rotulo}</a>)}
-            <a href={LINKS.areaMembros} target="_blank" rel="noopener noreferrer" className="membros">Área de Membros</a>
+            <a href={S.LINKS.areaMembros} target="_blank" rel="noopener noreferrer" className="membros">Área de Membros</a>
           </nav>
         </div>
         {menuAberto && (
@@ -172,8 +175,8 @@ export default function App() {
                 <a key={href} href={href} onClick={() => setMenuAberto(false)}>{rotulo}</a>
               ))}
               <div className="drawer-ctas">
-                <a href={LINKS.faleConosco} target="_blank" rel="noopener noreferrer" onClick={() => setMenuAberto(false)} className="cta-azul">Falar no WhatsApp</a>
-                <a href={LINKS.areaMembros} target="_blank" rel="noopener noreferrer" onClick={() => setMenuAberto(false)} className="cta-grafite">Área de Membros</a>
+                <a href={S.LINKS.faleConosco} target="_blank" rel="noopener noreferrer" onClick={() => setMenuAberto(false)} className="cta-azul">Falar no WhatsApp</a>
+                <a href={S.LINKS.areaMembros} target="_blank" rel="noopener noreferrer" onClick={() => setMenuAberto(false)} className="cta-grafite">Área de Membros</a>
               </div>
             </div>
           </nav>
@@ -182,7 +185,7 @@ export default function App() {
 
       <section id="inicio" className="hero">
         <div className="hero-camadas">
-          {FOTOS_CAPA.map((src, i) => (
+          {S.FOTOS_CAPA.map((src, i) => (
             <div key={src} className="hero-camada" style={{ backgroundImage: `url("${src}")`, opacity: i === capa ? 1 : 0 }}></div>
           ))}
         </div>
@@ -195,7 +198,7 @@ export default function App() {
           <h1>Aqui você não é visita. É <em>esperado</em>.</h1>
           <p className="hero-sub">Somos a Promessa Lago dos Peixes: uma igreja viva, jovem e de portas abertas, que existe para cuidar, amar e priorizar pessoas.</p>
           <div className="hero-cta">
-            <a href={LINKS.faleConosco} target="_blank" rel="noopener noreferrer" className="btn-azul">Sou novo aqui — falar no WhatsApp</a>
+            <a href={S.LINKS.faleConosco} target="_blank" rel="noopener noreferrer" className="btn-azul">Sou novo aqui — falar no WhatsApp</a>
             <a href="#videos" className="btn-vidro">▶ Ver a igreja por dentro</a>
           </div>
           <div className="hero-base">
@@ -216,7 +219,7 @@ export default function App() {
             <div className="hero-controles">
               <button onClick={() => irCapa(capa - 1)} aria-label="Foto anterior">‹</button>
               <div className="pontos">
-                {FOTOS_CAPA.map((_, i) => (
+                {S.FOTOS_CAPA.map((_, i) => (
                   <button
                     key={i}
                     onClick={() => irCapa(i)}
@@ -238,7 +241,7 @@ export default function App() {
             <h2 className="titulo">Venha como está. Nós iremos caminhar com você.</h2>
             <p className="par-grande">Ninguém precisa se encaixar num molde para entrar aqui. Se for sua primeira vez, avise a gente no WhatsApp: alguém vai te receber na porta, te apresentar a igreja e sentar com você.</p>
             <div className="botoes">
-              <a href={LINKS.faleConosco} target="_blank" rel="noopener noreferrer" className="btn-grafite">Fale conosco</a>
+              <a href={S.LINKS.faleConosco} target="_blank" rel="noopener noreferrer" className="btn-grafite">Fale conosco</a>
               <a href="#participe" onClick={() => irAba('oracao')} className="btn-ghost">Enviar pedido de oração</a>
             </div>
           </div>
@@ -264,7 +267,7 @@ export default function App() {
               <div className="chapeu claro">Igreja em movimento</div>
               <h2 className="titulo" style={{ maxWidth: '24ch', marginBottom: 0 }}>Conheça um pouco da nossa igreja antes mesmo de vir.</h2>
             </div>
-            <a href={LINKS.instagram} target="_blank" rel="noopener noreferrer" className="btn-outline-claro">Ver tudo no Instagram</a>
+            <a href={S.LINKS.instagram} target="_blank" rel="noopener noreferrer" className="btn-outline-claro">Ver tudo no Instagram</a>
           </div>
           <div className="reels-barra">
             <div className="reels-dica">
@@ -277,9 +280,9 @@ export default function App() {
             </div>
           </div>
           <div className="trilhaReels" ref={refReels}>
-            {REELS.map((r, i) => (
+            {S.REELS.map((r, i) => (
               <a key={i} href={r.url} target="_blank" rel="noopener noreferrer" className="reel-card">
-                <img src={r.poster} alt={r.titulo} loading="lazy" />
+                {r.poster && <img src={r.poster} alt={r.titulo} loading="lazy" />}
                 <div className="scrim"></div>
                 <span className="play">▶</span>
                 <div className="rodape">
@@ -300,10 +303,10 @@ export default function App() {
               <h2 className="titulo" style={{ maxWidth: '22ch' }}>Pregações para ouvir durante a semana</h2>
               <p className="apoio" style={{ maxWidth: '46ch' }}>Publicamos os trechos e as mensagens completas nas redes. Toque em qualquer uma para assistir.</p>
             </div>
-            <a href={LINKS.pregacoes} target="_blank" rel="noopener noreferrer" className="btn-ghost">Ver todas as pregações</a>
+            <a href={S.LINKS.pregacoes} target="_blank" rel="noopener noreferrer" className="btn-ghost">Ver todas as pregações</a>
           </div>
           <div className="msg-grid">
-            {MENSAGENS.map((m, i) => (
+            {S.MENSAGENS.map((m, i) => (
               <a key={i} href={m.url} target="_blank" rel="noopener noreferrer" className="msg-card">
                 <span className="play-azul">▶</span>
                 <span className="txt">
@@ -330,7 +333,7 @@ export default function App() {
             <p className="apoio">Cada foto aqui é de um sábado, de uma célula, de um café com a vizinhança. Igreja é gente.</p>
           </div>
           <div className="galeria">
-            {GALERIA.map((f, i) => (
+            {S.GALERIA.map((f, i) => (
               <div key={i} className={f.larga ? 'g-larga' : 'g-quad'}>
                 <img src={f.src} alt={f.alt} loading="lazy" />
               </div>
@@ -378,14 +381,14 @@ export default function App() {
           </div>
           <div className="lideres-grid">
             <div className="familia-carrossel">
-              {FOTOS_FAMILIA.map((f, i) => (
+              {S.FOTOS_FAMILIA.map((f, i) => (
                 <div key={i} className="familia-foto" style={{ opacity: i === familia ? 1 : 0, pointerEvents: i === familia ? 'auto' : 'none' }}>
                   <img src={f.src} alt={f.alt} loading="lazy" />
                 </div>
               ))}
               <div className="familia-controles">
                 <div className="pontos">
-                  {FOTOS_FAMILIA.map((_, i) => (
+                  {S.FOTOS_FAMILIA.map((_, i) => (
                     <button key={i} onClick={() => irFamilia(i)} aria-label="Ver foto da família pastoral" className={i === familia ? 'ativo' : ''}></button>
                   ))}
                 </div>
@@ -404,7 +407,7 @@ export default function App() {
               </div>
               <p>Pastor da Promessa Lago dos Peixes. Conduz a igreja no ensino da Palavra e no louvor, e caminha de perto com cada família — do primeiro café ao batismo. A porta da casa pastoral está aberta para conversar, orar e ouvir.</p>
               <p style={{ marginTop: 14 }}>A família pastoral vive a igreja junto com a igreja: no culto, na célula, na visita e no café da esquina.</p>
-              <a href={LINKS.faleConosco} target="_blank" rel="noopener noreferrer" className="btn-azul" style={{ marginTop: 22 }}>Conversar com o pastor</a>
+              <a href={S.LINKS.faleConosco} target="_blank" rel="noopener noreferrer" className="btn-azul" style={{ marginTop: 22 }}>Conversar com o pastor</a>
             </div>
           </div>
         </div>
@@ -444,7 +447,7 @@ export default function App() {
             <div className="fp-botoes">
               <a href="#participe" onClick={() => irAba('ministerio')} className="fp-azul"><span>Quero me candidatar a um ministério</span><span>→</span></a>
               <a href="#celulas" className="fp-claro"><span>Ver as células e participar</span><span>→</span></a>
-              <a href={LINKS.faleConosco} target="_blank" rel="noopener noreferrer" className="fp-ghost"><span>Prefiro falar com alguém antes</span><span>→</span></a>
+              <a href={S.LINKS.faleConosco} target="_blank" rel="noopener noreferrer" className="fp-ghost"><span>Prefiro falar com alguém antes</span><span>→</span></a>
             </div>
           </div>
         </div>
@@ -489,7 +492,7 @@ export default function App() {
             <p className="apoio" style={{ maxWidth: '42ch' }}>Adultos, jovens e crianças reunidos toda semana para compartilhar a vida e aprender mais sobre Jesus. Chegue sem avisar — você vai ser recebido.</p>
           </div>
           <div className="cel-grid">
-            {CELULAS.map((c, i) => (
+            {S.CELULAS.map((c, i) => (
               <div className="cel-card" key={i}>
                 <div className="cel-head">
                   <h3>{c.nome}</h3>
@@ -595,7 +598,7 @@ export default function App() {
                 </button>
               </div>
               {envio === 'erro' && (
-                <p className="form-erro">Não conseguimos enviar agora. Tente de novo em instantes — ou <a href={LINKS.faleConosco} target="_blank" rel="noopener noreferrer">fale com a gente no WhatsApp</a>.</p>
+                <p className="form-erro">Não conseguimos enviar agora. Tente de novo em instantes — ou <a href={S.LINKS.faleConosco} target="_blank" rel="noopener noreferrer">fale com a gente no WhatsApp</a>.</p>
               )}
             </form>
           )}
@@ -616,7 +619,7 @@ export default function App() {
             <button type="button" className="pix-btn" onClick={copiarPix}>
               {pixCopiado ? 'Chave PIX copiada' : 'Copiar chave PIX'}
             </button>
-            <a href={LINKS.tesouraria} target="_blank" rel="noopener noreferrer" className="pix-tesouraria">Enviar comprovante à tesouraria</a>
+            <a href={S.LINKS.tesouraria} target="_blank" rel="noopener noreferrer" className="pix-tesouraria">Enviar comprovante à tesouraria</a>
             <div className="pix-aviso">
               <span className="seta">↗</span>
               <span>Depois de contribuir, envie o comprovante para a tesouraria — assim o registro da sua contribuição fica certinho.</span>
@@ -641,18 +644,18 @@ export default function App() {
                   <span>Banheiros acessíveis</span>
                   <span>Estacionamento na rua</span>
                 </div>
-                <a href={LINKS.maps} target="_blank" rel="noopener noreferrer" className="rota">Abrir rota no Google Maps →</a>
+                <a href={S.LINKS.maps} target="_blank" rel="noopener noreferrer" className="rota">Abrir rota no Google Maps →</a>
               </div>
               <div className="contato-links">
-                <a href={LINKS.faleConosco} target="_blank" rel="noopener noreferrer" className="card-link">
+                <a href={S.LINKS.faleConosco} target="_blank" rel="noopener noreferrer" className="card-link">
                   <div className="rotulo-mini">WhatsApp</div>
                   <div className="v">Fale conosco →</div>
                 </a>
-                <a href={LINKS.email} className="card-link">
+                <a href={S.LINKS.email} className="card-link">
                   <div className="rotulo-mini">E-mail</div>
                   <div className="v">Escrever para a igreja →</div>
                 </a>
-                <a href={LINKS.instagram} target="_blank" rel="noopener noreferrer" className="card-link">
+                <a href={S.LINKS.instagram} target="_blank" rel="noopener noreferrer" className="card-link">
                   <div className="rotulo-mini">Instagram</div>
                   <div className="v">Seguir @promessalagodospeixes →</div>
                 </a>
@@ -661,7 +664,7 @@ export default function App() {
           </div>
           <div className="mapa">
             <iframe
-              src={LINKS.mapsEmbed}
+              src={S.LINKS.mapsEmbed}
               title="Mapa — Promessa Lago dos Peixes"
               loading="lazy"
               allowFullScreen
@@ -692,10 +695,10 @@ export default function App() {
               </div>
               <div className="foot-col">
                 <div className="t">Links</div>
-                <a href={LINKS.instagram} target="_blank" rel="noopener noreferrer">Instagram</a>
+                <a href={S.LINKS.instagram} target="_blank" rel="noopener noreferrer">Instagram</a>
                 <a href="https://promessistas.org/" target="_blank" rel="noopener noreferrer">Promessistas Brasil</a>
                 <a href="https://instagram.com/promessistas" target="_blank" rel="noopener noreferrer">@promessistas</a>
-                <a href={LINKS.areaMembros} target="_blank" rel="noopener noreferrer">Área de Membros</a>
+                <a href={S.LINKS.areaMembros} target="_blank" rel="noopener noreferrer">Área de Membros</a>
               </div>
             </div>
           </div>
