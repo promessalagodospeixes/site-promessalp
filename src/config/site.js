@@ -26,20 +26,82 @@ export const PADROES = {
     heroSub: 'Somos a Promessa Lago dos Peixes: uma igreja viva, jovem e de portas abertas, que existe para cuidar, amar e priorizar pessoas.',
     novoTitulo: 'Venha como está. Nós iremos caminhar com você.',
     novoTexto: 'Ninguém precisa se encaixar num molde para entrar aqui. Se for sua primeira vez, avise a gente no WhatsApp: alguém vai te receber na porta, te apresentar a igreja e sentar com você.',
-    sobreTitulo: 'Uma igreja que nasceu de um chamado dentro de um trem.',
+    passo1t: 'Chegue no horário que der',
+    passo1d: 'O culto de sábado começa 10h30 e termina às 12h. Sem traje obrigatório, sem constrangimento.',
+    passo2t: 'Traga sua família toda',
+    passo2d: 'As crianças têm classes por idade na Escola Bíblica; no culto, adoramos todos juntos — em família.',
+    passo3t: 'Estrutura pensada para todos',
+    passo3d: 'Entrada e banheiros acessíveis. Se precisar de qualquer apoio, avise antes — a igreja se prepara para receber você.',
+    videosChapeu: 'Igreja em movimento',
     videosTitulo: 'Conheça um pouco da nossa igreja antes mesmo de vir.',
     mensagensTitulo: 'Pregações para ouvir durante a semana',
     mensagensTexto: 'Publicamos os trechos e as mensagens completas nas redes. Toque em qualquer uma para assistir.',
     fotosTitulo: '38 anos de vidas, batismos e comunhão',
     fotosTexto: 'Cada foto aqui é de um sábado, de uma célula, de um café com a vizinhança. Igreja é gente.',
+    sobreTitulo: 'Uma igreja que nasceu de um chamado dentro de um trem.',
+    sobreIntro1: 'Em 1º de janeiro de 1988, o Presbítero Paulo Roberto ouviu de Deus:',
+    sobreCitacao: '“vá para a casa da tua mãe, que a minha luz tem que brilhar naquele lugar.”',
+    sobreIntro2: 'Daquela sala nasceu a nossa igreja. Trinta e oito anos depois, a missão é a mesma.',
+    pilar1a: 'Cuidar', pilar1b: 'uns dos outros, de perto',
+    pilar2a: 'Amar', pilar2b: 'sem exigir molde',
+    pilar3a: 'Priorizar', pilar3b: 'pessoas antes de tudo',
+    feTexto: 'Cremos em amar a Deus acima de todas as coisas e proclamar a mensagem de Jesus Cristo sob o poder do Espírito Santo. Fazemos parte de uma família de igrejas presente em todo o Brasil desde 1932.',
+    stat1Num: '38',
+    stat1Texto: 'anos de história em Lago dos Peixes',
+    stat2Num: '1 + 1 = 150',
+    stat2Texto: 'nosso sonho é ver cada discípulo alcançando outro discípulo — e chegarmos a 150 membros até 2027',
+    historiaResumo: 'Ler a nossa história completa — 1988 até hoje',
+    historia: `## O início
+Durante a década de 1980, o Presbítero Paulo Roberto Muniz Botelho e sua esposa, Diaconisa Vilma, congregavam na igreja em Austin e exerciam o chamado missionário no Rio de Janeiro e nas cidades vizinhas. Em 1º de janeiro de 1983, haviam iniciado um trabalho em Lages, na casa do Presbítero Norival e da irmã Amélia.
+
+Cinco anos depois, voltando de Lages, o Presbítero Paulo recebeu de Deus, dentro do trem, a seguinte direção:
+
+> “Vá para a casa da tua mãe, que a minha luz tem que brilhar lá naquele lugar.”
+
+Naquele mesmo dia, acompanhado do irmão Alcindo, dirigiu-se à casa de seus pais, Celina e José Muniz Botelho, na Rua Sogerim, nº 93. Em 1º de janeiro de 1988, em obediência a essa direção, teve início ali o ponto de pregação da Promessa em Lago dos Peixes.
+
+## Rua Sogerim, 93 · 1988–1992
+Ao trabalho recém-iniciado somou-se a família de José Fernando Muniz Botelho, com sua esposa Ana Botelho e as filhas Angélica e Cíntia. O trabalho consolidou-se, alcançou mais de quarenta irmãos e passou a ser assessorado ministerialmente pelo pastor e pelo grupo base da igreja em Austin.
+
+O primeiro batismo aconteceu em 1988, com o irmão José Muniz e a irmã Celina, pais do Presbítero Paulo. Ao longo desses anos houve batismos no Espírito Santo, avivamentos em subidas ao monte e batismos cerimoniais — além de evangelismos, cultos nos lares e tardes de louvor para levantar recursos para um terreno próprio.
+
+## Rua Antônio Cunha, 202 · a partir de 1992
+Em janeiro de 1992, a igreja mudou para um espaço maior, cedido pelo irmão José Fernando. Nesse período, o irmão Luiz Thomé tornou-se o primeiro membro consagrado da igreja, levado ao Diaconato na igreja em Austin. No mesmo ano, de uma visita de amor nasceu também o trabalho em Engenheiro Pedreira.
+
+## Estrada Austin-Queimados, 250 — o templo
+Ali foi construído o templo, inaugurado por volta de 1998 — endereço em que permanecemos até hoje.
+
+## O reconhecimento da data de fundação · 2026
+Em 27 de junho de 2026, em Assembleia Extraordinária convocada pelo Pastor Gabriel Azeredo Pereira, a igreja refletiu sobre o tema “Onde começa uma igreja?” — a igreja nasce de uma experiência com Deus, e não de um edifício (Atos 2.1-4; Mateus 16.18). Pelo mesmo princípio, a Assembleia Local reconheceu, de forma unânime, a fundação da nossa igreja em 1º de janeiro de 1988.`,
+    historiaDataDestaque: '1º de janeiro de 1988',
+    historiaDataSub: 'Fundação reconhecida em Assembleia Local · 38 anos em 2026',
+    historiaFontes: 'Fontes: “Histórico da Promessa Lago dos Peixes” (pesquisa de Rosilene e Eclair, com testemunhos dos pioneiros, 2026) e Ata da Assembleia Extraordinária de 27/06/2026. Consolidação: Pr. Gabriel Azeredo Pereira.',
+    lideresChapeu: 'Conheça nossa família Pastoral',
+    lideresTitulo: 'Quem caminha com você aqui',
+    lideresApoio: 'Gente de verdade, com nome e rosto. Se precisar de qualquer coisa, procure qualquer um deles no sábado.',
     pastorNome: 'Pr. Gabriel Azeredo Pereira',
     pastorEsposa: 'Pâmela Pereira',
     pastorFilhos: 'Gabriel Filho, Nicolas e Zoe',
     pastorBio1: 'Pastor da Promessa Lago dos Peixes. Conduz a igreja no ensino da Palavra e no louvor, e caminha de perto com cada família — do primeiro café ao batismo. A porta da casa pastoral está aberta para conversar, orar e ouvir.',
     pastorBio2: 'A família pastoral vive a igreja junto com a igreja: no culto, na célula, na visita e no café da esquina.',
+    minChapeu: 'Como servimos',
+    minTitulo: 'Cada ministério é um jeito de cuidar',
+    minApoio: 'Dos de dentro e dos de fora. Escolha por onde começar — tem lugar para você em todos.',
+    facaParteTitulo: 'Tem um lugar guardado para você servir',
+    facaParteTexto: 'Não precisa ter experiência nem talento pronto — precisa querer. Preencha o cadastro dizendo com o que você gostaria de ajudar e a liderança do ministério entra em contato com você.',
+    eventosChapeu: 'Conheça nossa agenda',
+    eventosTitulo: 'O que vem por aí na Promessa',
+    ritmoTitulo: 'Sempre tem algo acontecendo aqui',
+    ritmoTexto: 'Além dos cultos, a semana tem célula nos lares, oração às terças e um encontro por mês com a comunidade. A agenda completa é publicada no Instagram.',
+    celTitulo: 'Encontre a célula mais perto de você',
+    celApoio: 'Adultos, jovens e crianças reunidos toda semana para compartilhar a vida e aprender mais sobre Jesus. Chegue sem avisar — você vai ser recebido.',
+    partTitulo: 'Fale com a igreja por aqui',
+    partTexto: 'Preencha e a mensagem chega direto no e-mail da igreja. Respondemos em até dois dias.',
+    contribuaTitulo: 'Contribua com esta obra',
     contribuaTexto: 'Dízimos e ofertas são atos voluntários de amor e adoração. Cada recurso é investido com responsabilidade: no cuidado do templo, nas missões local e externa, no auxílio às necessidades dos irmãos, no apoio à família pastoral e no cuidado de outras igrejas.',
     pixExibicao: '30.228.769/0001-22',
     pixCopia: '30228769000122',
+    contatoTitulo: 'Onde estamos',
     endereco: 'Estrada Austin-Queimados, 250',
     cidade: 'Austin, Nova Iguaçu / RJ — CEP 26086-295',
     referencia: 'Referência: Mercado do Beto na esquina, ao lado da Águas do Rio.',
@@ -105,7 +167,7 @@ export async function carregarEventos() {
   try {
     const hoje = new Date().toLocaleDateString('sv') // AAAA-MM-DD local
     const r = await fetch(
-      `${SUPABASE_URL}/rest/v1/agenda?tipo=eq.Igreja%20Local&data=gte.${hoje}&select=data,hora,titulo,descricao,ministerio,link,capa&order=data.asc,hora.asc&limit=24`,
+      `${SUPABASE_URL}/rest/v1/agenda?tipo=eq.Igreja%20Local&data=gte.${hoje}&select=data,hora,titulo,descricao,ministerio,link,capa&order=data.asc,hora.asc&limit=200`,
       { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` } },
     )
     if (!r.ok) return []
@@ -113,6 +175,26 @@ export async function carregarEventos() {
   } catch (e) {
     return []
   }
+}
+
+// Transforma o texto da história (## = subtítulo, > = citação) em blocos.
+export function parseHistoria(texto) {
+  const blocos = []
+  for (const trecho of String(texto || '').split(/\n\s*\n/)) {
+    const t = trecho.trim()
+    if (!t) continue
+    if (t.startsWith('## ')) {
+      const [primeira, ...resto] = t.split('\n')
+      blocos.push({ tipo: 'h3', texto: primeira.slice(3).trim() })
+      const corpo = resto.join('\n').trim()
+      if (corpo) blocos.push({ tipo: 'p', texto: corpo })
+    } else if (t.startsWith('> ')) {
+      blocos.push({ tipo: 'quote', texto: t.replace(/^>\s?/gm, '').trim() })
+    } else {
+      blocos.push({ tipo: 'p', texto: t })
+    }
+  }
+  return blocos
 }
 
 // Busca o que foi salvo no editor do sistema de gestão e mescla nos padrões.

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { PADROES, carregarConfig, carregarEventos, OPCOES_MINISTERIO_EXTRA } from './config/site.js'
+import { PADROES, carregarConfig, carregarEventos, parseHistoria, OPCOES_MINISTERIO_EXTRA } from './config/site.js'
 
 const MESES_A = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ']
 const DIAS_SEM = ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado']
@@ -46,33 +46,25 @@ function iniciais(nome) {
   return (nome || '?').split(/\s+e\s+|\s+/).filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toUpperCase()
 }
 
-function Historia() {
+function Historia({ T }) {
+  const blocos = parseHistoria(T.historia)
   return (
     <details className="historia">
       <summary>
-        <span>Ler a nossa história completa — 1988 até hoje</span>
+        <span>{T.historiaResumo}</span>
         <span className="mais">+</span>
       </summary>
       <div className="hist-corpo">
-        <h3>O início</h3>
-        <p>Durante a década de 1980, o Presbítero Paulo Roberto Muniz Botelho e sua esposa, Diaconisa Vilma, congregavam na igreja em Austin e exerciam o chamado missionário no Rio de Janeiro e nas cidades vizinhas. Em 1º de janeiro de 1983, haviam iniciado um trabalho em Lages, na casa do Presbítero Norival e da irmã Amélia.</p>
-        <p>Cinco anos depois, voltando de Lages, o Presbítero Paulo recebeu de Deus, dentro do trem, a seguinte direção:</p>
-        <blockquote>“Vá para a casa da tua mãe, que a minha luz tem que brilhar lá naquele lugar.”</blockquote>
-        <p>Naquele mesmo dia, acompanhado do irmão Alcindo, dirigiu-se à casa de seus pais, Celina e José Muniz Botelho, na Rua Sogerim, nº 93. Em 1º de janeiro de 1988, em obediência a essa direção, teve início ali o ponto de pregação da Promessa em Lago dos Peixes.</p>
-        <h3>Rua Sogerim, 93 · 1988–1992</h3>
-        <p>Ao trabalho recém-iniciado somou-se a família de José Fernando Muniz Botelho, com sua esposa Ana Botelho e as filhas Angélica e Cíntia. O trabalho consolidou-se, alcançou mais de quarenta irmãos e passou a ser assessorado ministerialmente pelo pastor e pelo grupo base da igreja em Austin.</p>
-        <p>O primeiro batismo aconteceu em 1988, com o irmão José Muniz e a irmã Celina, pais do Presbítero Paulo. Ao longo desses anos houve batismos no Espírito Santo, avivamentos em subidas ao monte e batismos cerimoniais — além de evangelismos, cultos nos lares e tardes de louvor para levantar recursos para um terreno próprio.</p>
-        <h3>Rua Antônio Cunha, 202 · a partir de 1992</h3>
-        <p>Em janeiro de 1992, a igreja mudou para um espaço maior, cedido pelo irmão José Fernando. Nesse período, o irmão Luiz Thomé tornou-se o primeiro membro consagrado da igreja, levado ao Diaconato na igreja em Austin. No mesmo ano, de uma visita de amor nasceu também o trabalho em Engenheiro Pedreira.</p>
-        <h3>Estrada Austin-Queimados, 250 — o templo</h3>
-        <p>Ali foi construído o templo, inaugurado por volta de 1998 — endereço em que permanecemos até hoje.</p>
-        <h3>O reconhecimento da data de fundação · 2026</h3>
-        <p>Em 27 de junho de 2026, em Assembleia Extraordinária convocada pelo Pastor Gabriel Azeredo Pereira, a igreja refletiu sobre o tema <em>“Onde começa uma igreja?”</em> — a igreja nasce de uma experiência com Deus, e não de um edifício (Atos 2.1-4; Mateus 16.18). Pelo mesmo princípio, a Assembleia Local reconheceu, de forma unânime, a fundação da nossa igreja em 1º de janeiro de 1988.</p>
+        {blocos.map((b, i) => {
+          if (b.tipo === 'h3') return <h3 key={i}>{b.texto}</h3>
+          if (b.tipo === 'quote') return <blockquote key={i}>{b.texto}</blockquote>
+          return <p key={i}>{b.texto}</p>
+        })}
         <div className="hist-data">
-          <div className="g">1º de janeiro de 1988</div>
-          <div className="s">Fundação reconhecida em Assembleia Local · 38 anos em 2026</div>
+          <div className="g">{T.historiaDataDestaque}</div>
+          <div className="s">{T.historiaDataSub}</div>
         </div>
-        <p className="hist-fontes">Fontes: “Histórico da Promessa Lago dos Peixes” (pesquisa de Rosilene e Eclair, com testemunhos dos pioneiros, 2026) e Ata da Assembleia Extraordinária de 27/06/2026. Consolidação: Pr. Gabriel Azeredo Pereira.</p>
+        <p className="hist-fontes">{T.historiaFontes}</p>
       </div>
     </details>
   )
@@ -88,6 +80,8 @@ export default function App() {
   const [envio, setEnvio] = useState('')
   const [fotoAberta, setFotoAberta] = useState(null)
   const [sobreIdx, setSobreIdx] = useState(0)
+  const [galIdx, setGalIdx] = useState(0)
+  const refMins = useRef(null)
   const [eventos, setEventos] = useState([])
   const refEventos = useRef(null)
   const refMsgs = useRef(null)
@@ -132,6 +126,18 @@ export default function App() {
   const rolarFotos = (dir) => {
     const el = refFotos.current
     if (el) el.scrollBy({ left: dir * Math.max(200, el.clientWidth * 0.7), behavior: 'smooth' })
+  }
+  const irGaleria = (i) => {
+    const n = S.GALERIA.length
+    const novo = ((i % n) + n) % n
+    setGalIdx(novo)
+    const el = refFotos.current
+    const alvo = el && el.children[novo]
+    if (alvo) alvo.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
+  }
+  const rolarMins = (dir) => {
+    const el = refMins.current
+    if (el) el.scrollBy({ left: dir * Math.max(280, el.clientWidth * 0.7), behavior: 'smooth' })
   }
   const navegarFoto = (delta) => setFotoAberta((i) => {
     const n = S.GALERIA.length
@@ -279,27 +285,15 @@ export default function App() {
             </div>
           </div>
           <div className="passos">
-            <div className="passo">
-              <div className="passo-num">01</div>
-              <div>
-                <h3>Chegue no horário que der</h3>
-                <p>O culto de sábado começa 10h30 e termina às 12h. Sem traje obrigatório, sem constrangimento.</p>
+            {[[T.passo1t, T.passo1d], [T.passo2t, T.passo2d], [T.passo3t, T.passo3d]].map(([t, d], i) => (
+              <div className="passo" key={i}>
+                <div className="passo-num">{'0' + (i + 1)}</div>
+                <div>
+                  <h3>{t}</h3>
+                  <p>{d}</p>
+                </div>
               </div>
-            </div>
-            <div className="passo">
-              <div className="passo-num">02</div>
-              <div>
-                <h3>Traga sua família toda</h3>
-                <p>As crianças têm classes por idade na Escola Bíblica; no culto, adoramos todos juntos — em família.</p>
-              </div>
-            </div>
-            <div className="passo">
-              <div className="passo-num">03</div>
-              <div>
-                <h3>Estrutura pensada para todos</h3>
-                <p>Entrada e banheiros acessíveis. Se precisar de qualquer apoio, avise antes — a igreja se prepara para receber você.</p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -309,7 +303,7 @@ export default function App() {
         <div className="container pos">
           <div className="cab-flex">
             <div>
-              <div className="chapeu claro">Igreja em movimento</div>
+              <div className="chapeu claro">{T.videosChapeu}</div>
               <h2 className="titulo" style={{ maxWidth: '24ch', marginBottom: 0 }}>{T.videosTitulo}</h2>
             </div>
             <a href={S.LINKS.instagram} target="_blank" rel="noopener noreferrer" className="btn-outline-claro">Ver tudo no Instagram</a>
@@ -393,23 +387,23 @@ export default function App() {
             <h2 className="titulo" style={{ margin: 0, maxWidth: '22ch' }}>{T.fotosTitulo}</h2>
             <p className="apoio">{T.fotosTexto}</p>
           </div>
-          {S.GALERIA[0] && (
-            <button type="button" className="galeria-destaque" onClick={() => setFotoAberta(0)}>
-              <img src={S.GALERIA[0].src} alt={S.GALERIA[0].alt} loading="lazy" />
+          {S.GALERIA[galIdx] && (
+            <button type="button" className="galeria-destaque" onClick={() => setFotoAberta(galIdx)}>
+              <img src={S.GALERIA[galIdx].src} alt={S.GALERIA[galIdx].alt} loading="lazy" />
             </button>
           )}
           {S.GALERIA.length > 1 && (
             <>
               <div className="fotos-barra">
-                <span className="fotos-dica">Toque numa foto para ampliar</span>
+                <span className="fotos-dica">Use as setas — a foto grande acompanha · toque nela para ampliar</span>
                 <div className="fotos-setas">
-                  <button onClick={() => rolarFotos(-1)} aria-label="Voltar">‹</button>
-                  <button onClick={() => rolarFotos(1)} aria-label="Avançar">›</button>
+                  <button onClick={() => irGaleria(galIdx - 1)} aria-label="Voltar">‹</button>
+                  <button onClick={() => irGaleria(galIdx + 1)} aria-label="Avançar">›</button>
                 </div>
               </div>
               <div className="trilhaFotos" ref={refFotos}>
-                {S.GALERIA.slice(1).map((f, i) => (
-                  <button type="button" key={i} className="foto-thumb" onClick={() => setFotoAberta(i + 1)}>
+                {S.GALERIA.map((f, i) => (
+                  <button type="button" key={i} className={'foto-thumb' + (i === galIdx ? ' ativa' : '')} onClick={() => setGalIdx(i)}>
                     <img src={f.src} alt={f.alt} loading="lazy" />
                   </button>
                 ))}
@@ -424,14 +418,14 @@ export default function App() {
           <div>
             <div className="chapeu">Quem somos</div>
             <h2 className="titulo">{T.sobreTitulo}</h2>
-            <p className="par-grande">Em 1º de janeiro de 1988, o Presbítero Paulo Roberto ouviu de Deus: <em className="citacao">“vá para a casa da tua mãe, que a minha luz tem que brilhar naquele lugar.”</em> Daquela sala nasceu a nossa igreja. Trinta e oito anos depois, a missão é a mesma.</p>
+            <p className="par-grande">{T.sobreIntro1} <em className="citacao">{T.sobreCitacao}</em> {T.sobreIntro2}</p>
             <div className="pilares">
-              <div className="pilar"><b>Cuidar</b><span>uns dos outros, de perto</span></div>
-              <div className="pilar"><b>Amar</b><span>sem exigir molde</span></div>
-              <div className="pilar"><b>Priorizar</b><span>pessoas antes de tudo</span></div>
+              <div className="pilar"><b>{T.pilar1a}</b><span>{T.pilar1b}</span></div>
+              <div className="pilar"><b>{T.pilar2a}</b><span>{T.pilar2b}</span></div>
+              <div className="pilar"><b>{T.pilar3a}</b><span>{T.pilar3b}</span></div>
             </div>
-            <p className="fe">Cremos em amar a Deus acima de todas as coisas e proclamar a mensagem de Jesus Cristo sob o poder do Espírito Santo. Fazemos parte de uma <a href="https://promessistas.org/" target="_blank" rel="noopener noreferrer">família de igrejas</a> presente em todo o Brasil desde 1932.</p>
-            <Historia />
+            <p className="fe">{T.feTexto} <a href="https://promessistas.org/" target="_blank" rel="noopener noreferrer">Conheça a nossa família de igrejas →</a></p>
+            <Historia T={T} />
           </div>
           <div className="sobre-lado">
             <div className="familia-carrossel retrato-carrossel">
@@ -456,12 +450,12 @@ export default function App() {
             </div>
             <div className="stats">
               <div className="stat cinza">
-                <div className="n">38</div>
-                <div className="d">anos de história em Lago dos Peixes</div>
+                <div className="n">{T.stat1Num}</div>
+                <div className="d">{T.stat1Texto}</div>
               </div>
               <div className="stat azul">
-                <div className="n">150</div>
-                <div className="d">pessoas alcançadas: a meta que estamos perseguindo</div>
+                <div className="n" style={{ fontSize: T.stat2Num.length > 4 ? 27 : 34 }}>{T.stat2Num}</div>
+                <div className="d">{T.stat2Texto}</div>
               </div>
             </div>
           </div>
@@ -470,10 +464,10 @@ export default function App() {
 
       <section id="lideres" className="sec sec-alt">
         <div className="container">
-          <div className="chapeu">Conheça nossos líderes</div>
+          <div className="chapeu">{T.lideresChapeu}</div>
           <div className="cab-flex" style={{ marginTop: 14 }}>
-            <h2 className="titulo" style={{ margin: 0, maxWidth: '20ch' }}>Quem caminha com você aqui</h2>
-            <p className="apoio">Gente de verdade, com nome e rosto. Se precisar de qualquer coisa, procure qualquer um deles no sábado.</p>
+            <h2 className="titulo" style={{ margin: 0, maxWidth: '20ch' }}>{T.lideresTitulo}</h2>
+            <p className="apoio">{T.lideresApoio}</p>
           </div>
           <div className="lideres-grid">
             <div className="familia-carrossel">
@@ -511,12 +505,19 @@ export default function App() {
 
       <section id="ministerios" className="sec">
         <div className="container">
-          <div className="chapeu">Como servimos</div>
+          <div className="chapeu">{T.minChapeu}</div>
           <div className="cab-flex" style={{ marginTop: 14 }}>
-            <h2 className="titulo" style={{ margin: 0, maxWidth: '20ch' }}>Cada ministério é um jeito de cuidar</h2>
-            <p className="apoio" style={{ maxWidth: '38ch' }}>Dos de dentro e dos de fora. Escolha por onde começar — tem lugar para você em todos.</p>
+            <h2 className="titulo" style={{ margin: 0, maxWidth: '20ch' }}>{T.minTitulo}</h2>
+            <p className="apoio" style={{ maxWidth: '38ch' }}>{T.minApoio}</p>
           </div>
-          <div className="min-grid">
+          <div className="msgs-barra">
+            <span className="fotos-dica">Arraste para o lado ou use as setas</span>
+            <div className="fotos-setas">
+              <button onClick={() => rolarMins(-1)} aria-label="Voltar">‹</button>
+              <button onClick={() => rolarMins(1)} aria-label="Avançar">›</button>
+            </div>
+          </div>
+          <div className="trilhaMins" ref={refMins}>
             {S.MINISTERIOS.map((m) => (
               <div className="min-card" key={m.n + m.nome}>
                 <div className="min-head">
@@ -541,8 +542,8 @@ export default function App() {
           <div id="faca-parte" className="faca-parte">
             <div>
               <div className="chapeu">Faça parte</div>
-              <h3>Tem um lugar guardado para você servir</h3>
-              <p>Não precisa ter experiência nem talento pronto — precisa querer. Preencha o cadastro dizendo com o que você gostaria de ajudar e a liderança do ministério entra em contato com você.</p>
+              <h3>{T.facaParteTitulo}</h3>
+              <p>{T.facaParteTexto}</p>
             </div>
             <div className="fp-botoes">
               <a href="#participe" onClick={() => abrirAba('ministerio')} className="fp-azul"><span>Quero me candidatar a um ministério</span><span>→</span></a>
@@ -557,8 +558,8 @@ export default function App() {
         <div className="container duas-col centro-alinhado">
           <div>
             <div className="chapeu">Ritmo da igreja</div>
-            <h2 className="titulo agenda-titulo">Sempre tem algo acontecendo aqui</h2>
-            <p className="par-medio">Além dos cultos, a semana tem célula nos lares, oração às terças e um encontro por mês com a comunidade. A agenda completa é publicada no Instagram.</p>
+            <h2 className="titulo agenda-titulo">{T.ritmoTitulo}</h2>
+            <p className="par-medio">{T.ritmoTexto}</p>
           </div>
           <div className="agenda-col">
             <div className="agenda-item">
@@ -589,8 +590,8 @@ export default function App() {
           <div className="container">
             <div className="cab-flex">
               <div>
-                <div className="chapeu">Conheça nossa agenda</div>
-                <h2 className="titulo" style={{ maxWidth: '22ch', marginBottom: 0 }}>O que vem por aí na Promessa</h2>
+                <div className="chapeu">{T.eventosChapeu}</div>
+                <h2 className="titulo" style={{ maxWidth: '22ch', marginBottom: 0 }}>{T.eventosTitulo}</h2>
               </div>
               <div className="fotos-setas">
                 <button onClick={() => rolarEventos(-1)} aria-label="Voltar">‹</button>
@@ -638,8 +639,8 @@ export default function App() {
         <div className="container">
           <div className="chapeu">Células nos lares</div>
           <div className="cab-flex" style={{ marginTop: 14 }}>
-            <h2 className="titulo" style={{ margin: 0, maxWidth: '20ch' }}>Encontre a célula mais perto de você</h2>
-            <p className="apoio" style={{ maxWidth: '42ch' }}>Adultos, jovens e crianças reunidos toda semana para compartilhar a vida e aprender mais sobre Jesus. Chegue sem avisar — você vai ser recebido.</p>
+            <h2 className="titulo" style={{ margin: 0, maxWidth: '20ch' }}>{T.celTitulo}</h2>
+            <p className="apoio" style={{ maxWidth: '42ch' }}>{T.celApoio}</p>
           </div>
           <div className="cel-grid">
             {S.CELULAS.map((c, i) => (
@@ -669,8 +670,8 @@ export default function App() {
         <div className="container-form">
           <div className="participe-cab">
             <div className="chapeu">Participe</div>
-            <h2 className="titulo">Fale com a igreja por aqui</h2>
-            <p>Preencha e a mensagem chega direto no e-mail da igreja. Respondemos em até dois dias.</p>
+            <h2 className="titulo">{T.partTitulo}</h2>
+            <p>{T.partTexto}</p>
           </div>
           <div className="abas">
             {ABAS.map((a) => (
@@ -743,7 +744,7 @@ export default function App() {
         <div className="container duas-col centro-alinhado pos">
           <div>
             <div className="chapeu claro">Generosidade</div>
-            <h2 className="titulo" style={{ maxWidth: '20ch' }}>Contribua com esta obra</h2>
+            <h2 className="titulo" style={{ maxWidth: '20ch' }}>{T.contribuaTitulo}</h2>
             <p className="par-claro">{T.contribuaTexto}</p>
           </div>
           <div className="pix-card">
@@ -765,7 +766,7 @@ export default function App() {
         <div className="container duas-col topo-alinhado">
           <div>
             <div className="chapeu">Venha nos visitar</div>
-            <h2 className="titulo" style={{ marginBottom: 22 }}>Onde estamos</h2>
+            <h2 className="titulo" style={{ marginBottom: 22 }}>{T.contatoTitulo}</h2>
             <div className="contato-cards">
               <div className="card-end">
                 <div className="rotulo-mini">Endereço</div>
