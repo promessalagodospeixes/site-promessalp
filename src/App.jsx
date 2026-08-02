@@ -1,29 +1,32 @@
 import { useEffect, useRef, useState } from 'react'
 import { PADROES, carregarConfig, OPCOES_MINISTERIO_EXTRA } from './config/site.js'
 
-const ROTAS = [
-  ['/', 'Início'],
-  ['/sobre', 'Quem Somos'],
-  ['/mensagens', 'Mensagens'],
-  ['/fotos', 'Fotos'],
-  ['/ministerios', 'Ministérios'],
-  ['/celulas', 'Células'],
-  ['/participe', 'Participe'],
-  ['/contribua', 'Contribua'],
-  ['/contato', 'Contato'],
+const NAV = [
+  ['#novo', 'Primeira visita'],
+  ['#sobre', 'Quem somos'],
+  ['#videos', 'Vídeos'],
+  ['#fotos', 'Fotos'],
+  ['#lideres', 'Liderança'],
+  ['#mensagens', 'Mensagens'],
+  ['#ministerios', 'Ministérios'],
+  ['#participe', 'Participe'],
+  ['#contribua', 'Contribua'],
+  ['#contato', 'Contato'],
 ]
 
-const TITULOS = {
-  '/': 'Promessa Lago dos Peixes · Austin, Nova Iguaçu/RJ',
-  '/sobre': 'Quem Somos · Promessa Lago dos Peixes',
-  '/mensagens': 'Mensagens · Promessa Lago dos Peixes',
-  '/fotos': 'Fotos · Promessa Lago dos Peixes',
-  '/ministerios': 'Ministérios · Promessa Lago dos Peixes',
-  '/celulas': 'Células · Promessa Lago dos Peixes',
-  '/participe': 'Participe · Promessa Lago dos Peixes',
-  '/contribua': 'Contribua · Promessa Lago dos Peixes',
-  '/contato': 'Contato · Promessa Lago dos Peixes',
-}
+const NAV_MOBILE = [
+  ['#novo', 'Primeira visita'],
+  ['#sobre', 'Quem somos'],
+  ['#videos', 'Vídeos'],
+  ['#fotos', 'Fotos'],
+  ['#lideres', 'Liderança'],
+  ['#mensagens', 'Mensagens'],
+  ['#ministerios', 'Ministérios'],
+  ['#celulas', 'Células'],
+  ['#participe', 'Participe'],
+  ['#contribua', 'Contribua'],
+  ['#contato', 'Contato'],
+]
 
 const ASSUNTOS = {
   ministerio: 'Site — candidatura a ministério',
@@ -75,7 +78,6 @@ function Historia() {
 
 export default function App() {
   const [S, setS] = useState(PADROES)
-  const [rota, setRota] = useState(window.location.pathname)
   const [pixCopiado, setPixCopiado] = useState(false)
   const [menuAberto, setMenuAberto] = useState(false)
   const [capa, setCapa] = useState(0)
@@ -90,37 +92,15 @@ export default function App() {
 
   useEffect(() => {
     carregarConfig().then(setS)
-    const aoVoltar = () => setRota(window.location.pathname)
-    window.addEventListener('popstate', aoVoltar)
-    return () => { window.removeEventListener('popstate', aoVoltar); clearTimeout(pixTimer.current) }
+    return () => clearTimeout(pixTimer.current)
   }, [])
 
   useEffect(() => {
-    document.title = TITULOS[rota] || TITULOS['/']
-  }, [rota])
-
-  useEffect(() => {
-    if (rota !== '/') return
     capaTimer.current = setInterval(() => setCapa((c) => (c + 1) % S.FOTOS_CAPA.length), 6500)
     return () => clearInterval(capaTimer.current)
-  }, [S, rota])
+  }, [S])
 
-  const ir = (p, opts = {}) => {
-    if (window.location.pathname !== p) window.history.pushState({}, '', p)
-    setRota(p)
-    setMenuAberto(false)
-    if (opts.aba) { setAba(opts.aba); setEnvio('') }
-    window.scrollTo({ top: 0 })
-  }
-
-  const Lk = ({ para, aba: abaDestino, className, children, style }) => (
-    <a
-      href={para}
-      className={className}
-      style={style}
-      onClick={(e) => { e.preventDefault(); ir(para, abaDestino ? { aba: abaDestino } : {}) }}
-    >{children}</a>
-  )
+  const abrirAba = (k) => { setAba(k); setEnvio(''); setMenuAberto(false) }
 
   const irCapa = (i) => {
     clearInterval(capaTimer.current)
@@ -168,11 +148,46 @@ export default function App() {
 
   const opcoesMinisterio = [...S.MINISTERIOS.map((m) => m.nome), ...OPCOES_MINISTERIO_EXTRA]
 
-  /* ─────────── Páginas ─────────── */
-
-  const PgInicio = () => (
+  return (
     <>
-      <section className="hero">
+      <header className="topo">
+        <div className="topo-in headRow">
+          <a href="#inicio" className="marca">
+            <img src="/logo.png" alt="Promessa Lago dos Peixes" />
+            <span className="marca-txt">
+              <span className="marca-nome brandName">Promessa Lago dos Peixes</span>
+              <span className="marca-sub brandSub">Austin · Nova Iguaçu / RJ</span>
+            </span>
+          </a>
+          <button
+            className="navBurger"
+            aria-label={menuAberto ? 'Fechar menu' : 'Abrir menu'}
+            aria-expanded={menuAberto}
+            onClick={() => setMenuAberto((v) => !v)}
+          >
+            <span></span><span></span><span className="curta"></span>
+          </button>
+          <nav className="navDesk">
+            {NAV.map(([href, rotulo]) => <a key={href} href={href}>{rotulo}</a>)}
+            <a href={S.LINKS.areaMembros} target="_blank" rel="noopener noreferrer" className="membros">Área de Membros</a>
+          </nav>
+        </div>
+        {menuAberto && (
+          <nav className="drawer">
+            <div className="drawer-in">
+              {NAV_MOBILE.map(([href, rotulo]) => (
+                <a key={href} href={href} onClick={() => setMenuAberto(false)}>{rotulo}</a>
+              ))}
+              <div className="drawer-ctas">
+                <a href={S.LINKS.faleConosco} target="_blank" rel="noopener noreferrer" onClick={() => setMenuAberto(false)} className="cta-azul">Falar no WhatsApp</a>
+                <a href={S.LINKS.areaMembros} target="_blank" rel="noopener noreferrer" onClick={() => setMenuAberto(false)} className="cta-grafite">Área de Membros</a>
+              </div>
+            </div>
+          </nav>
+        )}
+      </header>
+
+      <section id="inicio" className="hero">
         <div className="hero-camadas">
           {S.FOTOS_CAPA.map((src, i) => (
             <div key={src + i} className="hero-camada" style={{ backgroundImage: `url("${src}")`, opacity: i === capa ? 1 : 0 }}></div>
@@ -188,7 +203,7 @@ export default function App() {
           <p className="hero-sub">{T.heroSub}</p>
           <div className="hero-cta">
             <a href={S.LINKS.faleConosco} target="_blank" rel="noopener noreferrer" className="btn-azul">Sou novo aqui — falar no WhatsApp</a>
-            <Lk para="/mensagens" className="btn-vidro">▶ Ver a igreja por dentro</Lk>
+            <a href="#videos" className="btn-vidro">▶ Ver a igreja por dentro</a>
           </div>
           <div className="hero-base">
             <div className="hero-horarios">
@@ -202,7 +217,7 @@ export default function App() {
               <div className="h-item">
                 <div className="h-dia">Na semana</div>
                 <div className="h-hora">Células</div>
-                <div className="h-desc"><Lk para="/celulas">a mais próxima →</Lk></div>
+                <div className="h-desc"><a href="#celulas">a mais próxima →</a></div>
               </div>
             </div>
             <div className="hero-controles">
@@ -218,7 +233,7 @@ export default function App() {
         </div>
       </section>
 
-      <section className="sec">
+      <section id="novo" className="sec">
         <div className="container duas-col">
           <div>
             <div className="chapeu">Primeira visita</div>
@@ -226,7 +241,7 @@ export default function App() {
             <p className="par-grande">{T.novoTexto}</p>
             <div className="botoes">
               <a href={S.LINKS.faleConosco} target="_blank" rel="noopener noreferrer" className="btn-grafite">Fale conosco</a>
-              <Lk para="/participe" aba="oracao" className="btn-ghost">Enviar pedido de oração</Lk>
+              <a href="#participe" onClick={() => abrirAba('oracao')} className="btn-ghost">Enviar pedido de oração</a>
             </div>
           </div>
           <div className="passos">
@@ -255,42 +270,97 @@ export default function App() {
         </div>
       </section>
 
-      <section className="sec-agenda sec-alt">
-        <div className="container duas-col centro-alinhado">
-          <div>
-            <div className="chapeu">Ritmo da igreja</div>
-            <h2 className="titulo agenda-titulo">Sempre tem algo acontecendo aqui</h2>
-            <p className="par-medio">Além dos cultos, a semana tem célula nos lares, oração às terças e um encontro por mês com a comunidade. A agenda completa é publicada no Instagram.</p>
+      <section id="videos" className="sec sec-cinza">
+        <div className="blob blob-tr"></div>
+        <div className="container pos">
+          <div className="cab-flex">
+            <div>
+              <div className="chapeu claro">Igreja em movimento</div>
+              <h2 className="titulo" style={{ maxWidth: '24ch', marginBottom: 0 }}>{T.videosTitulo}</h2>
+            </div>
+            <a href={S.LINKS.instagram} target="_blank" rel="noopener noreferrer" className="btn-outline-claro">Ver tudo no Instagram</a>
           </div>
-          <div className="agenda-col">
-            <div className="agenda-item">
-              <div className="agenda-quando"><div className="q1">Terça</div><div className="q2">19h30</div></div>
-              <div className="agenda-div"></div>
-              <div className="agenda-oq"><b>Reunião de oração</b><span>Pela igreja e pela vizinhança — todo pedido é levado aqui</span></div>
+          <div className="reels-barra">
+            <div className="reels-dica">
+              <span className="ponto-claro"></span>
+              Últimos reels · arraste para o lado
             </div>
-            <div className="agenda-item">
-              <div className="agenda-quando"><div className="q1">Semana</div><div className="q2">Células</div></div>
-              <div className="agenda-div"></div>
-              <div className="agenda-oq">
-                <b>Encontros nos lares</b>
-                <span>Adultos, jovens e crianças reunidos toda semana para compartilhar a vida e aprender mais sobre Jesus.</span>
-                <Lk para="/celulas">Conheça nossas células →</Lk>
-              </div>
+            <div className="reels-setas">
+              <button onClick={() => rolarReels(-1)} aria-label="Voltar">‹</button>
+              <button onClick={() => rolarReels(1)} aria-label="Avançar">›</button>
             </div>
-            <div className="agenda-item">
-              <div className="agenda-quando"><div className="q1">Mensal</div><div className="q2">Café</div></div>
-              <div className="agenda-div"></div>
-              <div className="agenda-oq"><b>Café e Conexão</b><span>Uma manhã por mês de portas abertas para a comunidade de Lago dos Peixes, em Austin</span></div>
-            </div>
+          </div>
+          <div className="trilhaReels" ref={refReels}>
+            {S.REELS.map((r, i) => (
+              <a key={i} href={r.url} target="_blank" rel="noopener noreferrer" className="reel-card">
+                {r.poster && <img src={r.poster} alt={r.titulo} loading="lazy" />}
+                <div className="scrim"></div>
+                <span className="play">▶</span>
+                <div className="rodape">
+                  <div className="t">{r.titulo}</div>
+                  <div className="m">{r.meta}</div>
+                </div>
+              </a>
+            ))}
           </div>
         </div>
       </section>
-    </>
-  )
 
-  const PgSobre = () => (
-    <>
-      <section className="sec">
+      <section id="mensagens" className="sec">
+        <div className="container">
+          <div className="cab-flex">
+            <div>
+              <div className="chapeu">Mensagens</div>
+              <h2 className="titulo" style={{ maxWidth: '22ch' }}>{T.mensagensTitulo}</h2>
+              <p className="apoio" style={{ maxWidth: '46ch' }}>{T.mensagensTexto}</p>
+            </div>
+            {S.LINKS.pregacoes && (
+              <a href={S.LINKS.pregacoes} target="_blank" rel="noopener noreferrer" className="btn-ghost">Ver todas as pregações</a>
+            )}
+          </div>
+          <div className="msg-grid">
+            {S.MENSAGENS.map((m, i) => {
+              const conteudo = (
+                <>
+                  <span className="play-azul">▶</span>
+                  <span className="txt">
+                    <span className="t">{m.titulo}</span>
+                    <span className="m">{m.meta}</span>
+                  </span>
+                </>
+              )
+              return m.url
+                ? <a key={i} href={m.url} target="_blank" rel="noopener noreferrer" className="msg-card">{conteudo}</a>
+                : <div key={i} className="msg-card msg-sem-link">{conteudo}</div>
+            })}
+          </div>
+          <div className="faixa-denominacao">
+            <span>Recursos da nossa denominação para estudar durante a semana:</span>
+            <a href="https://www.youtube.com/@tvvivapromessa" target="_blank" rel="noopener noreferrer">TV Viva Promessa</a>
+            <a href="https://promessistas.org/lb356/" target="_blank" rel="noopener noreferrer">Lições Bíblicas</a>
+            <a href="https://promessistas.org/noticias/" target="_blank" rel="noopener noreferrer">Notícias</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="fotos" className="sec sec-alt">
+        <div className="container">
+          <div className="chapeu">Nossa gente</div>
+          <div className="cab-flex" style={{ marginTop: 14 }}>
+            <h2 className="titulo" style={{ margin: 0, maxWidth: '22ch' }}>{T.fotosTitulo}</h2>
+            <p className="apoio">{T.fotosTexto}</p>
+          </div>
+          <div className="galeria">
+            {S.GALERIA.map((f, i) => (
+              <div key={i} className={f.larga ? 'g-larga' : 'g-quad'}>
+                <img src={f.src} alt={f.alt} loading="lazy" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="sobre" className="sec">
         <div className="container duas-col topo-alinhado">
           <div>
             <div className="chapeu">Quem somos</div>
@@ -320,7 +390,7 @@ export default function App() {
         </div>
       </section>
 
-      <section className="sec sec-alt">
+      <section id="lideres" className="sec sec-alt">
         <div className="container">
           <div className="chapeu">Conheça nossos líderes</div>
           <div className="cab-flex" style={{ marginTop: 14 }}>
@@ -360,402 +430,269 @@ export default function App() {
           </div>
         </div>
       </section>
-    </>
-  )
 
-  const PgMensagens = () => (
-    <>
-      <section className="sec sec-cinza">
-        <div className="blob blob-tr"></div>
-        <div className="container pos">
-          <div className="cab-flex">
-            <div>
-              <div className="chapeu claro">Igreja em movimento</div>
-              <h2 className="titulo" style={{ maxWidth: '24ch', marginBottom: 0 }}>{T.videosTitulo}</h2>
-            </div>
-            <a href={S.LINKS.instagram} target="_blank" rel="noopener noreferrer" className="btn-outline-claro">Ver tudo no Instagram</a>
-          </div>
-          <div className="reels-barra">
-            <div className="reels-dica">
-              <span className="ponto-claro"></span>
-              Últimos reels · arraste para o lado
-            </div>
-            <div className="reels-setas">
-              <button onClick={() => rolarReels(-1)} aria-label="Voltar">‹</button>
-              <button onClick={() => rolarReels(1)} aria-label="Avançar">›</button>
-            </div>
-          </div>
-          <div className="trilhaReels" ref={refReels}>
-            {S.REELS.map((r, i) => (
-              <a key={i} href={r.url} target="_blank" rel="noopener noreferrer" className="reel-card">
-                {r.poster && <img src={r.poster} alt={r.titulo} loading="lazy" />}
-                <div className="scrim"></div>
-                <span className="play">▶</span>
-                <div className="rodape">
-                  <div className="t">{r.titulo}</div>
-                  <div className="m">{r.meta}</div>
-                </div>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="sec">
+      <section id="ministerios" className="sec">
         <div className="container">
-          <div className="cab-flex">
+          <div className="chapeu">Como servimos</div>
+          <div className="cab-flex" style={{ marginTop: 14 }}>
+            <h2 className="titulo" style={{ margin: 0, maxWidth: '20ch' }}>Cada ministério é um jeito de cuidar</h2>
+            <p className="apoio" style={{ maxWidth: '38ch' }}>Dos de dentro e dos de fora. Escolha por onde começar — tem lugar para você em todos.</p>
+          </div>
+          <div className="min-grid">
+            {S.MINISTERIOS.map((m) => (
+              <div className="min-card" key={m.n + m.nome}>
+                <div className="min-head">
+                  <span className="min-num">{m.n}</span>
+                  <h3>{m.nome}</h3>
+                </div>
+                <p>{m.desc}</p>
+                {m.lider && (
+                  <div className="min-lider">
+                    <span className="avatar">{iniciais(m.lider)}</span>
+                    <span className="quem">
+                      <span className="rot">Liderança</span>
+                      <span className="nm">{m.lider}</span>
+                    </span>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          <div id="faca-parte" className="faca-parte">
             <div>
-              <div className="chapeu">Mensagens</div>
-              <h2 className="titulo" style={{ maxWidth: '22ch' }}>{T.mensagensTitulo}</h2>
-              <p className="apoio" style={{ maxWidth: '46ch' }}>{T.mensagensTexto}</p>
+              <div className="chapeu">Faça parte</div>
+              <h3>Tem um lugar guardado para você servir</h3>
+              <p>Não precisa ter experiência nem talento pronto — precisa querer. Preencha o cadastro dizendo com o que você gostaria de ajudar e a liderança do ministério entra em contato com você.</p>
             </div>
-            {S.LINKS.pregacoes && (
-              <a href={S.LINKS.pregacoes} target="_blank" rel="noopener noreferrer" className="btn-ghost">Ver todas as pregações</a>
-            )}
-          </div>
-          <div className="msg-grid">
-            {S.MENSAGENS.map((m, i) => {
-              const conteudo = (
-                <>
-                  <span className="play-azul">▶</span>
-                  <span className="txt">
-                    <span className="t">{m.titulo}</span>
-                    <span className="m">{m.meta}</span>
-                  </span>
-                </>
-              )
-              return m.url
-                ? <a key={i} href={m.url} target="_blank" rel="noopener noreferrer" className="msg-card">{conteudo}</a>
-                : <div key={i} className="msg-card msg-sem-link">{conteudo}</div>
-            })}
-          </div>
-          <div className="faixa-denominacao">
-            <span>Recursos da nossa denominação para estudar durante a semana:</span>
-            <a href="https://www.youtube.com/@tvvivapromessa" target="_blank" rel="noopener noreferrer">TV Viva Promessa</a>
-            <a href="https://promessistas.org/lb356/" target="_blank" rel="noopener noreferrer">Lições Bíblicas</a>
-            <a href="https://promessistas.org/noticias/" target="_blank" rel="noopener noreferrer">Notícias</a>
+            <div className="fp-botoes">
+              <a href="#participe" onClick={() => abrirAba('ministerio')} className="fp-azul"><span>Quero me candidatar a um ministério</span><span>→</span></a>
+              <a href="#celulas" className="fp-claro"><span>Ver as células e participar</span><span>→</span></a>
+              <a href={S.LINKS.faleConosco} target="_blank" rel="noopener noreferrer" className="fp-ghost"><span>Prefiro falar com alguém antes</span><span>→</span></a>
+            </div>
           </div>
         </div>
       </section>
-    </>
-  )
 
-  const PgFotos = () => (
-    <section className="sec sec-alt">
-      <div className="container">
-        <div className="chapeu">Nossa gente</div>
-        <div className="cab-flex" style={{ marginTop: 14 }}>
-          <h2 className="titulo" style={{ margin: 0, maxWidth: '22ch' }}>{T.fotosTitulo}</h2>
-          <p className="apoio">{T.fotosTexto}</p>
-        </div>
-        <div className="galeria">
-          {S.GALERIA.map((f, i) => (
-            <div key={i} className={f.larga ? 'g-larga' : 'g-quad'}>
-              <img src={f.src} alt={f.alt} loading="lazy" />
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-
-  const PgMinisterios = () => (
-    <section className="sec sec-alt">
-      <div className="container">
-        <div className="chapeu">Como servimos</div>
-        <div className="cab-flex" style={{ marginTop: 14 }}>
-          <h2 className="titulo" style={{ margin: 0, maxWidth: '20ch' }}>Cada ministério é um jeito de cuidar</h2>
-          <p className="apoio" style={{ maxWidth: '38ch' }}>Dos de dentro e dos de fora. Escolha por onde começar — tem lugar para você em todos.</p>
-        </div>
-        <div className="min-grid">
-          {S.MINISTERIOS.map((m) => (
-            <div className="min-card" key={m.n + m.nome}>
-              <div className="min-head">
-                <span className="min-num">{m.n}</span>
-                <h3>{m.nome}</h3>
-              </div>
-              <p>{m.desc}</p>
-              {m.lider && (
-                <div className="min-lider">
-                  <span className="avatar">{iniciais(m.lider)}</span>
-                  <span className="quem">
-                    <span className="rot">Liderança</span>
-                    <span className="nm">{m.lider}</span>
-                  </span>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-        <div className="faca-parte">
+      <section id="agenda" className="sec-agenda sec-alt">
+        <div className="container duas-col centro-alinhado">
           <div>
-            <div className="chapeu">Faça parte</div>
-            <h3>Tem um lugar guardado para você servir</h3>
-            <p>Não precisa ter experiência nem talento pronto — precisa querer. Preencha o cadastro dizendo com o que você gostaria de ajudar e a liderança do ministério entra em contato com você.</p>
+            <div className="chapeu">Ritmo da igreja</div>
+            <h2 className="titulo agenda-titulo">Sempre tem algo acontecendo aqui</h2>
+            <p className="par-medio">Além dos cultos, a semana tem célula nos lares, oração às terças e um encontro por mês com a comunidade. A agenda completa é publicada no Instagram.</p>
           </div>
-          <div className="fp-botoes">
-            <Lk para="/participe" aba="ministerio" className="fp-azul"><span>Quero me candidatar a um ministério</span><span>→</span></Lk>
-            <Lk para="/celulas" className="fp-claro"><span>Ver as células e participar</span><span>→</span></Lk>
-            <a href={S.LINKS.faleConosco} target="_blank" rel="noopener noreferrer" className="fp-ghost"><span>Prefiro falar com alguém antes</span><span>→</span></a>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-
-  const PgCelulas = () => (
-    <section className="sec sec-alt">
-      <div className="container">
-        <div className="chapeu">Células nos lares</div>
-        <div className="cab-flex" style={{ marginTop: 14 }}>
-          <h2 className="titulo" style={{ margin: 0, maxWidth: '20ch' }}>Encontre a célula mais perto de você</h2>
-          <p className="apoio" style={{ maxWidth: '42ch' }}>Adultos, jovens e crianças reunidos toda semana para compartilhar a vida e aprender mais sobre Jesus. Chegue sem avisar — você vai ser recebido.</p>
-        </div>
-        <div className="cel-grid">
-          {S.CELULAS.map((c, i) => (
-            <div className="cel-card" key={i}>
-              <div className="cel-head">
-                <h3>{c.nome}</h3>
-                {c.publico && <span className="cel-publico">{c.publico}</span>}
+          <div className="agenda-col">
+            <div className="agenda-item">
+              <div className="agenda-quando"><div className="q1">Terça</div><div className="q2">19h30</div></div>
+              <div className="agenda-div"></div>
+              <div className="agenda-oq"><b>Reunião de oração</b><span>Pela igreja e pela vizinhança — todo pedido é levado aqui</span></div>
+            </div>
+            <div className="agenda-item">
+              <div className="agenda-quando"><div className="q1">Semana</div><div className="q2">Células</div></div>
+              <div className="agenda-div"></div>
+              <div className="agenda-oq">
+                <b>Encontros nos lares</b>
+                <span>Adultos, jovens e crianças reunidos toda semana para compartilhar a vida e aprender mais sobre Jesus.</span>
+                <a href="#celulas">Conheça nossas células →</a>
               </div>
-              <div className="cel-linhas">
-                <div><span className="rot">Quando</span><span className="forte">{c.horario}</span></div>
-                <div><span className="rot">Onde</span><span>{c.endereco}</span></div>
-                <div><span className="rot">Anfitrião</span><span>{c.lider}</span></div>
+            </div>
+            <div className="agenda-item">
+              <div className="agenda-quando"><div className="q1">Mensal</div><div className="q2">Café</div></div>
+              <div className="agenda-div"></div>
+              <div className="agenda-oq"><b>Café e Conexão</b><span>Uma manhã por mês de portas abertas para a comunidade de Lago dos Peixes, em Austin</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="celulas" className="sec">
+        <div className="container">
+          <div className="chapeu">Células nos lares</div>
+          <div className="cab-flex" style={{ marginTop: 14 }}>
+            <h2 className="titulo" style={{ margin: 0, maxWidth: '20ch' }}>Encontre a célula mais perto de você</h2>
+            <p className="apoio" style={{ maxWidth: '42ch' }}>Adultos, jovens e crianças reunidos toda semana para compartilhar a vida e aprender mais sobre Jesus. Chegue sem avisar — você vai ser recebido.</p>
+          </div>
+          <div className="cel-grid">
+            {S.CELULAS.map((c, i) => (
+              <div className="cel-card" key={i}>
+                <div className="cel-head">
+                  <h3>{c.nome}</h3>
+                  {c.publico && <span className="cel-publico">{c.publico}</span>}
+                </div>
+                <div className="cel-linhas">
+                  <div><span className="rot">Quando</span><span className="forte">{c.horario}</span></div>
+                  <div><span className="rot">Onde</span><span>{c.endereco}</span></div>
+                  <div><span className="rot">Anfitrião</span><span>{c.lider}</span></div>
+                </div>
+                <a href={c.mapa} target="_blank" rel="noopener noreferrer" className="cel-mapa">Ver no mapa →</a>
               </div>
-              <a href={c.mapa} target="_blank" rel="noopener noreferrer" className="cel-mapa">Ver no mapa →</a>
-            </div>
-          ))}
-        </div>
-        <div className="cel-cta">
-          <Lk para="/participe" aba="celula" className="btn-azul">Cadastrar uma célula</Lk>
-          <span>É líder de célula? Cadastre os dados e ela aparece aqui no site.</span>
-        </div>
-      </div>
-    </section>
-  )
-
-  const PgParticipe = () => (
-    <section className="sec">
-      <div className="container-form">
-        <div className="participe-cab">
-          <div className="chapeu">Participe</div>
-          <h2 className="titulo">Fale com a igreja por aqui</h2>
-          <p>Preencha e a mensagem chega direto no e-mail da igreja. Respondemos em até dois dias.</p>
-        </div>
-        <div className="abas">
-          {ABAS.map((a) => (
-            <button key={a.k} type="button" onClick={() => { setAba(a.k); setEnvio('') }} className={aba === a.k ? 'ativa' : ''}>{a.rotulo}</button>
-          ))}
-        </div>
-        {envio === 'ok' ? (
-          <div className="form-ok">
-            <div className="icone">✓</div>
-            <h3>Mensagem enviada!</h3>
-            <p>{aba === 'oracao'
-              ? 'Seu pedido chegou à igreja e será levado na reunião de oração de terça-feira.'
-              : 'Seu cadastro chegou ao e-mail da igreja. Entraremos em contato em até dois dias.'}</p>
-            <button type="button" onClick={() => setEnvio('')} className="btn-ghost">Enviar outra mensagem</button>
-          </div>
-        ) : (
-          <form onSubmit={enviarForm} className="form-card">
-            <input type="text" name="_gotcha" tabIndex="-1" autoComplete="off" className="hp" aria-hidden="true" />
-            {aba === 'ministerio' && (
-              <>
-                <div className="linha-2">
-                  {inp('Seu nome', { name: 'Nome', required: true, placeholder: 'Nome completo' })}
-                  {inp('WhatsApp', { name: 'WhatsApp', required: true, placeholder: '(21) 90000-0000' })}
-                </div>
-                <label className="campo">
-                  <span>Ministério em que quero servir</span>
-                  <select name="Ministério" required defaultValue="">
-                    <option value="" disabled>Selecione um ministério</option>
-                    {opcoesMinisterio.map((o) => <option key={o} value={o}>{o}</option>)}
-                  </select>
-                </label>
-                <label className="campo">
-                  <span>Conte um pouco sobre você</span>
-                  <textarea name="Mensagem" rows="4" placeholder="Experiência, disponibilidade, o que gosta de fazer…"></textarea>
-                </label>
-              </>
-            )}
-            {aba === 'celula' && (
-              <>
-                <div className="linha-2">
-                  {inp('Nome da célula', { name: 'Nome da célula', required: true, placeholder: 'Ex.: Célula Vida Nova' })}
-                  {inp('Líder / anfitrião', { name: 'Líder', required: true, placeholder: 'Quem recebe na casa' })}
-                </div>
-                {inp('Endereço completo', { name: 'Endereço', required: true, placeholder: 'Rua, número, bairro, ponto de referência' })}
-                <div className="linha-3">
-                  {inp('Dia e horário', { name: 'Dia e horário', required: true, placeholder: 'Ex.: quinta, 19h30' })}
-                  {inp('Público', { name: 'Público', placeholder: 'Famílias, jovens, crianças…' })}
-                  {inp('WhatsApp de contato', { name: 'WhatsApp', required: true, placeholder: '(21) 90000-0000' })}
-                </div>
-                <label className="campo">
-                  <span>Observações</span>
-                  <textarea name="Observações" rows="3" placeholder="Alguma informação que ajude quem vai visitar"></textarea>
-                </label>
-              </>
-            )}
-            {aba === 'oracao' && (
-              <>
-                <div className="linha-2">
-                  {inp('Seu nome (opcional)', { name: 'Nome', placeholder: 'Pode ser anônimo' })}
-                  {inp('Contato para retorno (opcional)', { name: 'Contato', placeholder: 'WhatsApp ou e-mail' })}
-                </div>
-                <label className="campo">
-                  <span>Seu pedido de oração</span>
-                  <textarea name="Pedido" required rows="5" placeholder="Escreva com liberdade. A equipe de intercessão leva o seu pedido nas reuniões de terça."></textarea>
-                </label>
-                <label className="check">
-                  <input type="checkbox" name="Pedido confidencial" value="Sim" />
-                  <span>Prefiro que o pedido fique só com o pastor e a equipe de intercessão.</span>
-                </label>
-              </>
-            )}
-            <div className="form-rodape">
-              <span className="lgpd">Ao enviar, seus dados vão apenas para o e-mail da igreja. Não compartilhamos com ninguém.</span>
-              <button type="submit" disabled={envio === 'enviando'}>
-                {envio === 'enviando' ? 'Enviando…' : (aba === 'oracao' ? 'Enviar pedido' : 'Enviar cadastro')}
-              </button>
-            </div>
-            {envio === 'erro' && (
-              <p className="form-erro">Não conseguimos enviar agora. Tente de novo em instantes — ou <a href={S.LINKS.faleConosco} target="_blank" rel="noopener noreferrer">fale com a gente no WhatsApp</a>.</p>
-            )}
-          </form>
-        )}
-      </div>
-    </section>
-  )
-
-  const PgContribua = () => (
-    <section className="sec sec-cinza">
-      <div className="blob blob-bl"></div>
-      <div className="container duas-col centro-alinhado pos">
-        <div>
-          <div className="chapeu claro">Generosidade</div>
-          <h2 className="titulo" style={{ maxWidth: '20ch' }}>Contribua com esta obra</h2>
-          <p className="par-claro">{T.contribuaTexto}</p>
-        </div>
-        <div className="pix-card">
-          <div className="pix-rotulo">PIX · CNPJ da igreja</div>
-          <div className="pix-chave">{T.pixExibicao}</div>
-          <button type="button" className="pix-btn" onClick={copiarPix}>
-            {pixCopiado ? 'Chave PIX copiada' : 'Copiar chave PIX'}
-          </button>
-          <a href={S.LINKS.tesouraria} target="_blank" rel="noopener noreferrer" className="pix-tesouraria">Enviar comprovante à tesouraria</a>
-          <div className="pix-aviso">
-            <span className="seta">↗</span>
-            <span>Depois de contribuir, envie o comprovante para a tesouraria — assim o registro da sua contribuição fica certinho.</span>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-
-  const PgContato = () => (
-    <section className="sec">
-      <div className="container duas-col topo-alinhado">
-        <div>
-          <div className="chapeu">Venha nos visitar</div>
-          <h2 className="titulo" style={{ marginBottom: 22 }}>Onde estamos</h2>
-          <div className="contato-cards">
-            <div className="card-end">
-              <div className="rotulo-mini">Endereço</div>
-              <div className="end">{T.endereco}</div>
-              <div className="cid">{T.cidade}</div>
-              <div className="ref">{T.referencia}</div>
-              <div className="selos-acesso">
-                <span>Entrada acessível</span>
-                <span>Banheiros acessíveis</span>
-                <span>Estacionamento na rua</span>
-              </div>
-              <a href={S.LINKS.maps} target="_blank" rel="noopener noreferrer" className="rota">Abrir rota no Google Maps →</a>
-            </div>
-            <div className="contato-links">
-              <a href={S.LINKS.faleConosco} target="_blank" rel="noopener noreferrer" className="card-link">
-                <div className="rotulo-mini">WhatsApp</div>
-                <div className="v">Fale conosco →</div>
-              </a>
-              <a href={S.LINKS.email} className="card-link">
-                <div className="rotulo-mini">E-mail</div>
-                <div className="v">Escrever para a igreja →</div>
-              </a>
-              <a href={S.LINKS.instagram} target="_blank" rel="noopener noreferrer" className="card-link">
-                <div className="rotulo-mini">Instagram</div>
-                <div className="v">Seguir a igreja →</div>
-              </a>
-            </div>
-          </div>
-        </div>
-        <div className="mapa">
-          <iframe
-            src={S.LINKS.mapsEmbed}
-            title="Mapa — Promessa Lago dos Peixes"
-            loading="lazy"
-            allowFullScreen
-            referrerPolicy="no-referrer-when-downgrade"
-          ></iframe>
-        </div>
-      </div>
-    </section>
-  )
-
-  const PAGINAS = {
-    '/': PgInicio,
-    '/sobre': PgSobre,
-    '/mensagens': PgMensagens,
-    '/fotos': PgFotos,
-    '/ministerios': PgMinisterios,
-    '/celulas': PgCelulas,
-    '/participe': PgParticipe,
-    '/contribua': PgContribua,
-    '/contato': PgContato,
-  }
-  const Pagina = PAGINAS[rota] || PgInicio
-
-  return (
-    <>
-      <header className="topo">
-        <div className="topo-in headRow">
-          <Lk para="/" className="marca">
-            <img src="/logo.png" alt="Promessa Lago dos Peixes" />
-            <span className="marca-txt">
-              <span className="marca-nome brandName">Promessa Lago dos Peixes</span>
-              <span className="marca-sub brandSub">Austin · Nova Iguaçu / RJ</span>
-            </span>
-          </Lk>
-          <button
-            className="navBurger"
-            aria-label={menuAberto ? 'Fechar menu' : 'Abrir menu'}
-            aria-expanded={menuAberto}
-            onClick={() => setMenuAberto((v) => !v)}
-          >
-            <span></span><span></span><span className="curta"></span>
-          </button>
-          <nav className="navDesk">
-            {ROTAS.map(([p, rotulo]) => (
-              <Lk key={p} para={p} className={rota === p ? 'ativa' : ''}>{rotulo}</Lk>
             ))}
-            <a href={S.LINKS.areaMembros} target="_blank" rel="noopener noreferrer" className="membros">Área de Membros</a>
-          </nav>
+          </div>
+          <div className="cel-cta">
+            <a href="#participe" onClick={() => abrirAba('celula')} className="btn-azul">Cadastrar uma célula</a>
+            <span>É líder de célula? Cadastre os dados e ela aparece aqui no site.</span>
+          </div>
         </div>
-        {menuAberto && (
-          <nav className="drawer">
-            <div className="drawer-in">
-              {ROTAS.map(([p, rotulo]) => (
-                <Lk key={p} para={p}>{rotulo}</Lk>
-              ))}
-              <div className="drawer-ctas">
-                <a href={S.LINKS.faleConosco} target="_blank" rel="noopener noreferrer" onClick={() => setMenuAberto(false)} className="cta-azul">Falar no WhatsApp</a>
-                <a href={S.LINKS.areaMembros} target="_blank" rel="noopener noreferrer" onClick={() => setMenuAberto(false)} className="cta-grafite">Área de Membros</a>
+      </section>
+
+      <section id="participe" className="sec sec-alt">
+        <div className="container-form">
+          <div className="participe-cab">
+            <div className="chapeu">Participe</div>
+            <h2 className="titulo">Fale com a igreja por aqui</h2>
+            <p>Preencha e a mensagem chega direto no e-mail da igreja. Respondemos em até dois dias.</p>
+          </div>
+          <div className="abas">
+            {ABAS.map((a) => (
+              <button key={a.k} type="button" onClick={() => { setAba(a.k); setEnvio('') }} className={aba === a.k ? 'ativa' : ''}>{a.rotulo}</button>
+            ))}
+          </div>
+          {envio === 'ok' ? (
+            <div className="form-ok">
+              <div className="icone">✓</div>
+              <h3>Mensagem enviada!</h3>
+              <p>{aba === 'oracao'
+                ? 'Seu pedido chegou à igreja e será levado na reunião de oração de terça-feira.'
+                : 'Seu cadastro chegou ao e-mail da igreja. Entraremos em contato em até dois dias.'}</p>
+              <button type="button" onClick={() => setEnvio('')} className="btn-ghost">Enviar outra mensagem</button>
+            </div>
+          ) : (
+            <form onSubmit={enviarForm} className="form-card">
+              <input type="text" name="_gotcha" tabIndex="-1" autoComplete="off" className="hp" aria-hidden="true" />
+              {aba === 'ministerio' && (
+                <>
+                  <div className="linha-2">
+                    {inp('Seu nome', { name: 'Nome', required: true, placeholder: 'Nome completo' })}
+                    {inp('WhatsApp', { name: 'WhatsApp', required: true, placeholder: '(21) 90000-0000' })}
+                  </div>
+                  <label className="campo">
+                    <span>Ministério em que quero servir</span>
+                    <select name="Ministério" required defaultValue="">
+                      <option value="" disabled>Selecione um ministério</option>
+                      {opcoesMinisterio.map((o) => <option key={o} value={o}>{o}</option>)}
+                    </select>
+                  </label>
+                  <label className="campo">
+                    <span>Conte um pouco sobre você</span>
+                    <textarea name="Mensagem" rows="4" placeholder="Experiência, disponibilidade, o que gosta de fazer…"></textarea>
+                  </label>
+                </>
+              )}
+              {aba === 'celula' && (
+                <>
+                  <div className="linha-2">
+                    {inp('Nome da célula', { name: 'Nome da célula', required: true, placeholder: 'Ex.: Célula Vida Nova' })}
+                    {inp('Líder / anfitrião', { name: 'Líder', required: true, placeholder: 'Quem recebe na casa' })}
+                  </div>
+                  {inp('Endereço completo', { name: 'Endereço', required: true, placeholder: 'Rua, número, bairro, ponto de referência' })}
+                  <div className="linha-3">
+                    {inp('Dia e horário', { name: 'Dia e horário', required: true, placeholder: 'Ex.: quinta, 19h30' })}
+                    {inp('Público', { name: 'Público', placeholder: 'Famílias, jovens, crianças…' })}
+                    {inp('WhatsApp de contato', { name: 'WhatsApp', required: true, placeholder: '(21) 90000-0000' })}
+                  </div>
+                  <label className="campo">
+                    <span>Observações</span>
+                    <textarea name="Observações" rows="3" placeholder="Alguma informação que ajude quem vai visitar"></textarea>
+                  </label>
+                </>
+              )}
+              {aba === 'oracao' && (
+                <>
+                  <div className="linha-2">
+                    {inp('Seu nome (opcional)', { name: 'Nome', placeholder: 'Pode ser anônimo' })}
+                    {inp('Contato para retorno (opcional)', { name: 'Contato', placeholder: 'WhatsApp ou e-mail' })}
+                  </div>
+                  <label className="campo">
+                    <span>Seu pedido de oração</span>
+                    <textarea name="Pedido" required rows="5" placeholder="Escreva com liberdade. A equipe de intercessão leva o seu pedido nas reuniões de terça."></textarea>
+                  </label>
+                  <label className="check">
+                    <input type="checkbox" name="Pedido confidencial" value="Sim" />
+                    <span>Prefiro que o pedido fique só com o pastor e a equipe de intercessão.</span>
+                  </label>
+                </>
+              )}
+              <div className="form-rodape">
+                <span className="lgpd">Ao enviar, seus dados vão apenas para o e-mail da igreja. Não compartilhamos com ninguém.</span>
+                <button type="submit" disabled={envio === 'enviando'}>
+                  {envio === 'enviando' ? 'Enviando…' : (aba === 'oracao' ? 'Enviar pedido' : 'Enviar cadastro')}
+                </button>
+              </div>
+              {envio === 'erro' && (
+                <p className="form-erro">Não conseguimos enviar agora. Tente de novo em instantes — ou <a href={S.LINKS.faleConosco} target="_blank" rel="noopener noreferrer">fale com a gente no WhatsApp</a>.</p>
+              )}
+            </form>
+          )}
+        </div>
+      </section>
+
+      <section id="contribua" className="sec sec-cinza">
+        <div className="blob blob-bl"></div>
+        <div className="container duas-col centro-alinhado pos">
+          <div>
+            <div className="chapeu claro">Generosidade</div>
+            <h2 className="titulo" style={{ maxWidth: '20ch' }}>Contribua com esta obra</h2>
+            <p className="par-claro">{T.contribuaTexto}</p>
+          </div>
+          <div className="pix-card">
+            <div className="pix-rotulo">PIX · CNPJ da igreja</div>
+            <div className="pix-chave">{T.pixExibicao}</div>
+            <button type="button" className="pix-btn" onClick={copiarPix}>
+              {pixCopiado ? 'Chave PIX copiada' : 'Copiar chave PIX'}
+            </button>
+            <a href={S.LINKS.tesouraria} target="_blank" rel="noopener noreferrer" className="pix-tesouraria">Enviar comprovante à tesouraria</a>
+            <div className="pix-aviso">
+              <span className="seta">↗</span>
+              <span>Depois de contribuir, envie o comprovante para a tesouraria — assim o registro da sua contribuição fica certinho.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="contato" className="sec">
+        <div className="container duas-col topo-alinhado">
+          <div>
+            <div className="chapeu">Venha nos visitar</div>
+            <h2 className="titulo" style={{ marginBottom: 22 }}>Onde estamos</h2>
+            <div className="contato-cards">
+              <div className="card-end">
+                <div className="rotulo-mini">Endereço</div>
+                <div className="end">{T.endereco}</div>
+                <div className="cid">{T.cidade}</div>
+                <div className="ref">{T.referencia}</div>
+                <div className="selos-acesso">
+                  <span>Entrada acessível</span>
+                  <span>Banheiros acessíveis</span>
+                  <span>Estacionamento na rua</span>
+                </div>
+                <a href={S.LINKS.maps} target="_blank" rel="noopener noreferrer" className="rota">Abrir rota no Google Maps →</a>
+              </div>
+              <div className="contato-links">
+                <a href={S.LINKS.faleConosco} target="_blank" rel="noopener noreferrer" className="card-link">
+                  <div className="rotulo-mini">WhatsApp</div>
+                  <div className="v">Fale conosco →</div>
+                </a>
+                <a href={S.LINKS.email} className="card-link">
+                  <div className="rotulo-mini">E-mail</div>
+                  <div className="v">Escrever para a igreja →</div>
+                </a>
+                <a href={S.LINKS.instagram} target="_blank" rel="noopener noreferrer" className="card-link">
+                  <div className="rotulo-mini">Instagram</div>
+                  <div className="v">Seguir a igreja →</div>
+                </a>
               </div>
             </div>
-          </nav>
-        )}
-      </header>
-
-      <Pagina />
+          </div>
+          <div className="mapa">
+            <iframe
+              src={S.LINKS.mapsEmbed}
+              title="Mapa — Promessa Lago dos Peixes"
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
+        </div>
+      </section>
 
       <footer>
         <div className="container">
@@ -767,8 +704,8 @@ export default function App() {
             <div className="foot-cols">
               <div className="foot-col">
                 <div className="t">Site</div>
-                {ROTAS.filter(([p]) => p !== '/').map(([p, rotulo]) => (
-                  <Lk key={p} para={p}>{rotulo}</Lk>
+                {NAV_MOBILE.map(([href, rotulo]) => (
+                  <a key={href} href={href}>{rotulo}</a>
                 ))}
               </div>
               <div className="foot-col">
