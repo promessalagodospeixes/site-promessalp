@@ -254,21 +254,7 @@ export default function App() {
             <a href={S.LINKS.faleConosco} target="_blank" rel="noopener noreferrer" className="btn-azul">Sou novo aqui — falar no WhatsApp</a>
             <a href="#videos" className="btn-vidro">▶ Ver a igreja por dentro</a>
           </div>
-          <div className="hero-base">
-            <div className="hero-horarios">
-              {S.HORARIOS.map((h, i) => (
-                <div className="h-item" key={i}>
-                  <div className="h-dia">{h.dia}</div>
-                  <div className="h-hora">{h.hora}</div>
-                  <div className="h-desc">{h.desc}</div>
-                </div>
-              ))}
-              <div className="h-item">
-                <div className="h-dia">Na semana</div>
-                <div className="h-hora">Células</div>
-                <div className="h-desc"><a href="#celulas">a mais próxima →</a></div>
-              </div>
-            </div>
+          <div className="hero-base hero-so-controles">
             <div className="hero-controles">
               <button onClick={() => irCapa(capa - 1)} aria-label="Foto anterior">‹</button>
               <div className="pontos">
@@ -278,6 +264,29 @@ export default function App() {
               </div>
               <button onClick={() => irCapa(capa + 1)} aria-label="Próxima foto">›</button>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="faixa-horarios">
+        <div className="container">
+          <div className="fxh-grid">
+            {S.HORARIOS.map((h, i) => (
+              <div className="fxh-item" key={i}>
+                <div className="fxh-dia">{h.dia}</div>
+                <div className="fxh-hora">{h.hora}</div>
+                <div className="fxh-desc">{h.desc}</div>
+              </div>
+            ))}
+            <div className="fxh-item">
+              <div className="fxh-dia">Na semana</div>
+              <div className="fxh-hora">Células</div>
+              <div className="fxh-desc"><a href="#celulas">a mais próxima →</a></div>
+            </div>
+          </div>
+          <div className="fxh-endereco">
+            <span>📍 {T.endereco} — {T.cidade}</span>
+            <a href="#contato">Como chegar →</a>
           </div>
         </div>
       </section>
