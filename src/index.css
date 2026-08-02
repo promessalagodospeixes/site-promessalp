@@ -166,11 +166,27 @@ h2.titulo{font-family:var(--sora);font-weight:700;font-size:clamp(30px,4vw,50px)
 .faixa-denominacao>span{font-size:14.5px;color:var(--corpo);flex:1 1 300px}
 .faixa-denominacao a{font-weight:700;font-size:14px;color:var(--azul-esc);border-bottom:1px solid var(--azul-hover)}
 
-/* ── Galeria ── */
-.galeria{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:14px;margin-top:40px}
-.g-larga{grid-column:1 / -1;aspect-ratio:16/11;border-radius:20px;overflow:hidden;background:var(--ph)}
-.g-quad{aspect-ratio:1/1;border-radius:20px;overflow:hidden;background:var(--ph)}
-.galeria img{width:100%;height:100%;object-fit:cover}
+/* ── Galeria: destaque + trilha de miniaturas + lightbox ── */
+.galeria-destaque{display:block;width:100%;aspect-ratio:16/9;border-radius:20px;overflow:hidden;background:var(--ph);margin-top:40px;border:none;padding:0;cursor:zoom-in}
+.galeria-destaque img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
+.galeria-destaque:hover img{transform:scale(1.015)}
+.fotos-barra{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:22px}
+.fotos-dica{font-size:13.5px;color:var(--corpo2)}
+.fotos-setas{display:flex;gap:10px}
+.fotos-setas button{width:40px;height:40px;border-radius:99px;border:1px solid var(--linha);background:#fff;color:var(--grafite);font-size:16px;cursor:pointer;transition:border-color .2s}
+.fotos-setas button:hover{border-color:var(--azul)}
+.trilhaFotos{display:flex;gap:12px;margin-top:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px;scrollbar-width:none;-ms-overflow-style:none}
+.trilhaFotos::-webkit-scrollbar{display:none}
+.foto-thumb{flex:0 0 clamp(130px,16vw,170px);scroll-snap-align:start;aspect-ratio:1/1;border-radius:14px;overflow:hidden;background:var(--ph);border:none;padding:0;cursor:zoom-in;transition:transform .2s}
+.foto-thumb:hover{transform:translateY(-3px)}
+.foto-thumb img{width:100%;height:100%;object-fit:cover}
+.lightbox{position:fixed;inset:0;z-index:300;background:rgba(20,24,26,.92);display:flex;align-items:center;justify-content:center;padding:24px;cursor:zoom-out}
+.lightbox img{max-width:min(92vw,1100px);max-height:86vh;border-radius:14px;object-fit:contain;cursor:default;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.lb-fechar{position:fixed;top:18px;right:18px;width:44px;height:44px;border-radius:99px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;font-size:17px;cursor:pointer}
+.lb-seta{position:fixed;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:99px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;font-size:20px;cursor:pointer}
+.lb-esq{left:14px}
+.lb-dir{right:14px}
+.lb-contador{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);font-size:13px;color:rgba(255,255,255,.85);background:rgba(255,255,255,.1);border-radius:99px;padding:6px 14px}
 
 /* ── Quem somos ── */
 .citacao{font-family:var(--serif);font-style:italic;font-size:19px;color:var(--grafite)}
@@ -212,6 +228,7 @@ h2.titulo{font-family:var(--sora);font-weight:700;font-size:clamp(30px,4vw,50px)
 .familia-controles .pontos button.ativo{width:22px;background:#fff}
 .familia-controles .setas{display:flex;gap:8px}
 .familia-controles .setas button{width:38px;height:38px;border-radius:99px;border:1px solid rgba(255,255,255,.55);background:rgba(40,48,52,.45);backdrop-filter:blur(6px);color:#fff;font-size:15px;cursor:pointer}
+.retrato-carrossel{aspect-ratio:4/5;box-shadow:0 34px 70px -40px rgba(35,40,43,.6)}
 .mini-chapeu{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--azul)}
 .nome-pastor{font-family:var(--sora);font-weight:700;font-size:clamp(24px,3vw,34px);letter-spacing:-.025em;color:var(--grafite);margin:10px 0 10px}
 .selos{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}

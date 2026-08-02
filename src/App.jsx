@@ -84,9 +84,12 @@ export default function App() {
   const [familia, setFamilia] = useState(0)
   const [aba, setAba] = useState('ministerio')
   const [envio, setEnvio] = useState('')
+  const [fotoAberta, setFotoAberta] = useState(null)
+  const [sobreIdx, setSobreIdx] = useState(0)
   const pixTimer = useRef(null)
   const capaTimer = useRef(null)
   const refReels = useRef(null)
+  const refFotos = useRef(null)
 
   const T = S.TEXTOS
 
@@ -107,10 +110,19 @@ export default function App() {
     setCapa(((i % S.FOTOS_CAPA.length) + S.FOTOS_CAPA.length) % S.FOTOS_CAPA.length)
   }
   const irFamilia = (i) => setFamilia(((i % S.FOTOS_FAMILIA.length) + S.FOTOS_FAMILIA.length) % S.FOTOS_FAMILIA.length)
+  const irSobre = (i) => setSobreIdx(((i % S.FOTOS_SOBRE.length) + S.FOTOS_SOBRE.length) % S.FOTOS_SOBRE.length)
   const rolarReels = (dir) => {
     const el = refReels.current
     if (el) el.scrollBy({ left: dir * Math.max(240, el.clientWidth * 0.7), behavior: 'smooth' })
   }
+  const rolarFotos = (dir) => {
+    const el = refFotos.current
+    if (el) el.scrollBy({ left: dir * Math.max(200, el.clientWidth * 0.7), behavior: 'smooth' })
+  }
+  const navegarFoto = (delta) => setFotoAberta((i) => {
+    const n = S.GALERIA.length
+    return ((i + delta) % n + n) % n
+  })
   const copiarPix = () => {
     try { navigator.clipboard?.writeText(T.pixCopia) } catch (e) { /* sem clipboard */ }
     setPixCopiado(true)
@@ -189,8 +201,16 @@ export default function App() {
 
       <section id="inicio" className="hero">
         <div className="hero-camadas">
-          {S.FOTOS_CAPA.map((src, i) => (
-            <div key={src + i} className="hero-camada" style={{ backgroundImage: `url("${src}")`, opacity: i === capa ? 1 : 0 }}></div>
+          {S.FOTOS_CAPA.map((f, i) => (
+            <div
+              key={(f.src || f) + i}
+              className="hero-camada"
+              style={{
+                backgroundImage: `url("${f.src || f}")`,
+                backgroundPosition: { topo: 'center top', base: 'center bottom' }[f.pos] || 'center 38%',
+                opacity: i === capa ? 1 : 0,
+              }}
+            ></div>
           ))}
         </div>
         <div className="hero-scrim"></div>
@@ -350,13 +370,29 @@ export default function App() {
             <h2 className="titulo" style={{ margin: 0, maxWidth: '22ch' }}>{T.fotosTitulo}</h2>
             <p className="apoio">{T.fotosTexto}</p>
           </div>
-          <div className="galeria">
-            {S.GALERIA.map((f, i) => (
-              <div key={i} className={f.larga ? 'g-larga' : 'g-quad'}>
-                <img src={f.src} alt={f.alt} loading="lazy" />
+          {S.GALERIA[0] && (
+            <button type="button" className="galeria-destaque" onClick={() => setFotoAberta(0)}>
+              <img src={S.GALERIA[0].src} alt={S.GALERIA[0].alt} loading="lazy" />
+            </button>
+          )}
+          {S.GALERIA.length > 1 && (
+            <>
+              <div className="fotos-barra">
+                <span className="fotos-dica">Toque numa foto para ampliar</span>
+                <div className="fotos-setas">
+                  <button onClick={() => rolarFotos(-1)} aria-label="Voltar">‹</button>
+                  <button onClick={() => rolarFotos(1)} aria-label="Avançar">›</button>
+                </div>
               </div>
-            ))}
-          </div>
+              <div className="trilhaFotos" ref={refFotos}>
+                {S.GALERIA.slice(1).map((f, i) => (
+                  <button type="button" key={i} className="foto-thumb" onClick={() => setFotoAberta(i + 1)}>
+                    <img src={f.src} alt={f.alt} loading="lazy" />
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </section>
 
@@ -375,7 +411,26 @@ export default function App() {
             <Historia />
           </div>
           <div className="sobre-lado">
-            <div className="retrato"><img src={S.GALERIA[0]?.src || '/foto-batismo.jpg'} alt="Promessa Lago dos Peixes" loading="lazy" /></div>
+            <div className="familia-carrossel retrato-carrossel">
+              {S.FOTOS_SOBRE.map((f, i) => (
+                <div key={i} className="familia-foto" style={{ opacity: i === sobreIdx ? 1 : 0, pointerEvents: i === sobreIdx ? 'auto' : 'none' }}>
+                  <img src={f.src} alt="Promessa Lago dos Peixes" loading="lazy" style={{ objectPosition: { topo: 'center top', base: 'center bottom' }[f.pos] || 'center' }} />
+                </div>
+              ))}
+              {S.FOTOS_SOBRE.length > 1 && (
+                <div className="familia-controles">
+                  <div className="pontos">
+                    {S.FOTOS_SOBRE.map((_, i) => (
+                      <button key={i} onClick={() => irSobre(i)} aria-label="Ver foto" className={i === sobreIdx ? 'ativo' : ''}></button>
+                    ))}
+                  </div>
+                  <div className="setas">
+                    <button onClick={() => irSobre(sobreIdx - 1)} aria-label="Foto anterior">‹</button>
+                    <button onClick={() => irSobre(sobreIdx + 1)} aria-label="Próxima foto">›</button>
+                  </div>
+                </div>
+              )}
+            </div>
             <div className="stats">
               <div className="stat cinza">
                 <div className="n">38</div>
@@ -401,7 +456,7 @@ export default function App() {
             <div className="familia-carrossel">
               {S.FOTOS_FAMILIA.map((f, i) => (
                 <div key={i} className="familia-foto" style={{ opacity: i === familia ? 1 : 0, pointerEvents: i === familia ? 'auto' : 'none' }}>
-                  <img src={f.src} alt={f.alt} loading="lazy" />
+                  <img src={f.src} alt={f.alt} loading="lazy" style={{ objectPosition: { topo: 'center top', base: 'center bottom' }[f.pos] || 'center' }} />
                 </div>
               ))}
               <div className="familia-controles">
@@ -693,6 +748,16 @@ export default function App() {
           </div>
         </div>
       </section>
+
+      {fotoAberta !== null && S.GALERIA[fotoAberta] && (
+        <div className="lightbox" onClick={() => setFotoAberta(null)}>
+          <button className="lb-fechar" aria-label="Fechar" onClick={() => setFotoAberta(null)}>✕</button>
+          <button className="lb-seta lb-esq" aria-label="Foto anterior" onClick={(e) => { e.stopPropagation(); navegarFoto(-1) }}>‹</button>
+          <img src={S.GALERIA[fotoAberta].src} alt={S.GALERIA[fotoAberta].alt} onClick={(e) => e.stopPropagation()} />
+          <button className="lb-seta lb-dir" aria-label="Próxima foto" onClick={(e) => { e.stopPropagation(); navegarFoto(1) }}>›</button>
+          <div className="lb-contador">{fotoAberta + 1} / {S.GALERIA.length}</div>
+        </div>
+      )}
 
       <footer>
         <div className="container">

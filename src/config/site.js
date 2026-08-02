@@ -48,12 +48,13 @@ export const PADROES = {
     { dia: 'Domingo', hora: '18h', desc: 'Culto de Celebração' },
     { dia: 'Terça', hora: '19h30', desc: 'Reunião de oração' },
   ],
-  FOTOS_CAPA: ['/foto-comunidade.jpg', '/foto-batismo.jpg'],
+  FOTOS_CAPA: [{ src: '/foto-comunidade.jpg', pos: 'centro' }, { src: '/foto-batismo.jpg', pos: 'centro' }],
+  FOTOS_SOBRE: [{ src: '/foto-batismo.jpg', pos: 'centro' }],
   FOTOS_FAMILIA: [
-    { src: '/foto-comunidade.jpg', alt: 'Família pastoral' },
-    { src: '/foto-batismo.jpg', alt: 'Pastor com a igreja no culto' },
-    { src: '/galeria-4.jpg', alt: 'Família pastoral numa célula' },
-    { src: '/galeria-ampla.jpg', alt: 'Pastor com a comunidade' },
+    { src: '/foto-comunidade.jpg', alt: 'Família pastoral', pos: 'centro' },
+    { src: '/foto-batismo.jpg', alt: 'Pastor com a igreja no culto', pos: 'centro' },
+    { src: '/galeria-4.jpg', alt: 'Família pastoral numa célula', pos: 'centro' },
+    { src: '/galeria-ampla.jpg', alt: 'Pastor com a comunidade', pos: 'centro' },
   ],
   REELS: [
     { url: 'https://www.instagram.com/reel/DTGS5N5Dmaf/', titulo: 'Um encontro na Promessa', meta: 'Reel · culto de celebração', poster: '/video-poster-1.jpg' },
@@ -125,9 +126,17 @@ export async function carregarConfig() {
       }
     }
     if (Array.isArray(c.horarios) && c.horarios.length) out.HORARIOS = c.horarios.filter((h) => h.dia || h.hora)
-    if (Array.isArray(c.fotosCapa) && c.fotosCapa.length) out.FOTOS_CAPA = c.fotosCapa
+    if (Array.isArray(c.fotosCapa) && c.fotosCapa.length) {
+      // aceita string (formato antigo) ou {src, pos} (com enquadramento)
+      out.FOTOS_CAPA = c.fotosCapa.map((f) => (typeof f === 'string' ? { src: f, pos: 'centro' } : f)).filter((f) => f.src)
+    }
+    const normFoto = (f) => (typeof f === 'string' ? { src: f, pos: 'centro' } : f)
+    if (Array.isArray(c.sobreFotos) && c.sobreFotos.length) {
+      out.FOTOS_SOBRE = c.sobreFotos.map(normFoto).filter((f) => f.src)
+    }
     if (Array.isArray(c.familia) && c.familia.length) {
-      out.FOTOS_FAMILIA = c.familia.map((src, i) => ({ src, alt: `Família pastoral — foto ${i + 1}` }))
+      out.FOTOS_FAMILIA = c.familia.map(normFoto).filter((f) => f.src)
+        .map((f, i) => ({ ...f, alt: `Família pastoral — foto ${i + 1}` }))
     }
     if (Array.isArray(c.galeria) && c.galeria.length) {
       out.GALERIA = c.galeria.map((src, i) => ({
