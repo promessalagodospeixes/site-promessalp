@@ -502,3 +502,7 @@ footer{background:var(--cinza-foot);color:rgba(255,255,255,.88);padding:clamp(44
 .familia-controles .pontos button::before{content:'';width:6px;height:6px;border-radius:99px;background:rgba(255,255,255,.55);box-shadow:0 1px 4px rgba(0,0,0,.35);transition:width .3s,background .3s}
 .familia-controles .pontos button.ativo{width:44px;background:transparent}
 .familia-controles .pontos button.ativo::before{width:22px;background:#fff}
+
+/* fix: o alvo de toque de 44px não pode herdar o fundo branco do estado ativo */
+.hero-controles .pontos button.ativo{background:transparent;width:44px}
+.familia-controles .pontos button.ativo{background:transparent;width:44px;box-shadow:none}
