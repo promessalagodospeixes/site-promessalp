@@ -605,6 +605,7 @@ export default function App() {
                       <div className="dia">{String(d.getDate()).padStart(2, '0')}</div>
                       <div className="mes">{MESES_A[d.getMonth()]}</div>
                     </div>
+                    <img className="ev-logo" src="/logo.png" alt="Promessa Lago dos Peixes" loading="lazy" />
                     <div className="ev-titulo-escuro">{ev.titulo}</div>
                     <div className="ev-detalhes">
                       {DIAS_SEM[d.getDay()]}{ev.hora ? ` · ${ev.hora}` : ''}

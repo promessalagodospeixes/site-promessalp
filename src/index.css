@@ -333,7 +333,8 @@ a.evento-card:hover{transform:translateY(-4px);border-color:var(--azul-hover)}
 .ev-titulo{font-family:var(--sora);font-weight:700;font-size:19px;color:#fff;line-height:1.2;margin-top:10px}
 .ev-min{font-size:13px;color:rgba(255,255,255,.85);margin-top:4px}
 .ev-sem-foto{height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:22px;gap:8px}
-.ev-data-bloco{width:64px;border-radius:14px;background:var(--azul-bg);color:var(--azul-esc);text-align:center;padding:10px 0;margin-bottom:auto}
+.ev-data-bloco{width:64px;border-radius:14px;background:var(--azul-bg);color:var(--azul-esc);text-align:center;padding:10px 0}
+.ev-logo{width:52%;max-width:150px;margin:auto;opacity:.95}
 .ev-data-bloco .dia{font-family:var(--sora);font-weight:700;font-size:26px;line-height:1}
 .ev-data-bloco .mes{font-size:11px;font-weight:800;letter-spacing:.14em}
 .ev-titulo-escuro{font-family:var(--sora);font-weight:700;font-size:19px;color:var(--grafite);line-height:1.2;text-wrap:balance}
