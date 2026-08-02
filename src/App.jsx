@@ -259,11 +259,15 @@ export default function App() {
           <div className="hero-base hero-so-controles">
             <div className="hero-controles">
               <button onClick={() => irCapa(capa - 1)} aria-label="Foto anterior">‹</button>
-              <div className="pontos">
-                {S.FOTOS_CAPA.map((_, i) => (
-                  <button key={i} onClick={() => irCapa(i)} aria-label="Ver foto de capa" className={i === capa ? 'ativo' : ''}></button>
-                ))}
-              </div>
+              {S.FOTOS_CAPA.length <= 8 ? (
+                <div className="pontos">
+                  {S.FOTOS_CAPA.map((_, i) => (
+                    <button key={i} onClick={() => irCapa(i)} aria-label="Ver foto de capa" className={i === capa ? 'ativo' : ''}></button>
+                  ))}
+                </div>
+              ) : (
+                <span className="carrossel-contador claro">{capa + 1} / {S.FOTOS_CAPA.length}</span>
+              )}
               <button onClick={() => irCapa(capa + 1)} aria-label="Próxima foto">›</button>
             </div>
           </div>
@@ -456,11 +460,15 @@ export default function App() {
               ))}
               {S.FOTOS_SOBRE.length > 1 && (
                 <div className="familia-controles">
-                  <div className="pontos">
-                    {S.FOTOS_SOBRE.map((_, i) => (
-                      <button key={i} onClick={() => irSobre(i)} aria-label="Ver foto" className={i === sobreIdx ? 'ativo' : ''}></button>
-                    ))}
-                  </div>
+                  {S.FOTOS_SOBRE.length <= 8 ? (
+                    <div className="pontos">
+                      {S.FOTOS_SOBRE.map((_, i) => (
+                        <button key={i} onClick={() => irSobre(i)} aria-label="Ver foto" className={i === sobreIdx ? 'ativo' : ''}></button>
+                      ))}
+                    </div>
+                  ) : (
+                    <span className="carrossel-contador">{sobreIdx + 1} / {S.FOTOS_SOBRE.length}</span>
+                  )}
                   <div className="setas">
                     <button onClick={() => irSobre(sobreIdx - 1)} aria-label="Foto anterior">‹</button>
                     <button onClick={() => irSobre(sobreIdx + 1)} aria-label="Próxima foto">›</button>
@@ -497,11 +505,15 @@ export default function App() {
                 </div>
               ))}
               <div className="familia-controles">
-                <div className="pontos">
-                  {S.FOTOS_FAMILIA.map((_, i) => (
-                    <button key={i} onClick={() => irFamilia(i)} aria-label="Ver foto da família pastoral" className={i === familia ? 'ativo' : ''}></button>
-                  ))}
-                </div>
+                {S.FOTOS_FAMILIA.length <= 8 ? (
+                  <div className="pontos">
+                    {S.FOTOS_FAMILIA.map((_, i) => (
+                      <button key={i} onClick={() => irFamilia(i)} aria-label="Ver foto da família pastoral" className={i === familia ? 'ativo' : ''}></button>
+                    ))}
+                  </div>
+                ) : (
+                  <span className="carrossel-contador">{familia + 1} / {S.FOTOS_FAMILIA.length}</span>
+                )}
                 <div className="setas">
                   <button onClick={() => irFamilia(familia - 1)} aria-label="Foto anterior">‹</button>
                   <button onClick={() => irFamilia(familia + 1)} aria-label="Próxima foto">›</button>

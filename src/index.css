@@ -523,3 +523,11 @@ footer{background:var(--cinza-foot);color:rgba(255,255,255,.88);padding:clamp(44
   .fxh-item:last-child{grid-column:1 / -1}
   .fxh-endereco{font-size:12.5px;text-align:center}
 }
+
+/* Contador quando o carrossel tem muitas fotos (pontinhos não cabem) */
+.carrossel-contador{font-size:12.5px;font-weight:700;color:#fff;background:rgba(40,48,52,.55);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.35);border-radius:99px;padding:6px 12px;white-space:nowrap}
+.carrossel-contador.claro{background:rgba(255,255,255,.16)}
+.familia-controles{pointer-events:none}
+.familia-controles>*{pointer-events:auto}
+.familia-controles .setas{flex-shrink:0}
+.familia-controles .pontos{flex-wrap:wrap;max-width:70%}
