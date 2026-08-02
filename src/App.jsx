@@ -131,9 +131,14 @@ export default function App() {
     const n = S.GALERIA.length
     const novo = ((i % n) + n) % n
     setGalIdx(novo)
-    const el = refFotos.current
-    const alvo = el && el.children[novo]
-    if (alvo) alvo.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
+    // rola só a trilha de miniaturas — sem mexer na página (evita "quicadas");
+    // pequeno atraso pra rolagem não ser cancelada pela troca da foto grande
+    setTimeout(() => {
+      const el = refFotos.current
+      const alvo = el && el.children[novo]
+      // rolagem direta (sem animação): a suave é cancelada pela troca da foto grande
+      if (el && alvo) el.scrollLeft = alvo.offsetLeft - el.clientWidth / 2 + alvo.clientWidth / 2
+    }, 80)
   }
   const rolarMins = (dir) => {
     const el = refMins.current

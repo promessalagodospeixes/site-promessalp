@@ -167,7 +167,7 @@ h2.titulo{font-family:var(--sora);font-weight:700;font-size:clamp(30px,4vw,50px)
 .faixa-denominacao a{font-weight:700;font-size:14px;color:var(--azul-esc);border-bottom:1px solid var(--azul-hover)}
 
 /* ── Galeria: destaque + trilha de miniaturas + lightbox ── */
-.galeria-destaque{display:block;width:100%;aspect-ratio:16/9;border-radius:20px;overflow:hidden;background:var(--ph);margin-top:40px;border:none;padding:0;cursor:zoom-in}
+.galeria-destaque{display:block;width:100%;aspect-ratio:16/9;max-height:60vh;border-radius:20px;overflow:hidden;background:var(--ph);margin-top:40px;border:none;padding:0;cursor:zoom-in}
 .galeria-destaque img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
 .galeria-destaque:hover img{transform:scale(1.015)}
 .fotos-barra{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:22px}
