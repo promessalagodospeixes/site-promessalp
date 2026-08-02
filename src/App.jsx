@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { PADROES, carregarConfig, OPCOES_MINISTERIO_EXTRA } from './config/site.js'
+import { PADROES, carregarConfig, carregarEventos, OPCOES_MINISTERIO_EXTRA } from './config/site.js'
+
+const MESES_A = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ']
+const DIAS_SEM = ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado']
 
 const NAV = [
   ['#novo', 'Primeira visita'],
@@ -36,7 +39,6 @@ const ASSUNTOS = {
 
 const ABAS = [
   { k: 'ministerio', rotulo: 'Quero servir' },
-  { k: 'celula', rotulo: 'Cadastrar célula' },
   { k: 'oracao', rotulo: 'Pedido de oração' },
 ]
 
@@ -86,6 +88,8 @@ export default function App() {
   const [envio, setEnvio] = useState('')
   const [fotoAberta, setFotoAberta] = useState(null)
   const [sobreIdx, setSobreIdx] = useState(0)
+  const [eventos, setEventos] = useState([])
+  const refEventos = useRef(null)
   const pixTimer = useRef(null)
   const capaTimer = useRef(null)
   const refReels = useRef(null)
@@ -95,6 +99,7 @@ export default function App() {
 
   useEffect(() => {
     carregarConfig().then(setS)
+    carregarEventos().then(setEventos)
     return () => clearTimeout(pixTimer.current)
   }, [])
 
@@ -113,6 +118,10 @@ export default function App() {
   const irSobre = (i) => setSobreIdx(((i % S.FOTOS_SOBRE.length) + S.FOTOS_SOBRE.length) % S.FOTOS_SOBRE.length)
   const rolarReels = (dir) => {
     const el = refReels.current
+    if (el) el.scrollBy({ left: dir * Math.max(240, el.clientWidth * 0.7), behavior: 'smooth' })
+  }
+  const rolarEventos = (dir) => {
+    const el = refEventos.current
     if (el) el.scrollBy({ left: dir * Math.max(240, el.clientWidth * 0.7), behavior: 'smooth' })
   }
   const rolarFotos = (dir) => {
@@ -342,7 +351,9 @@ export default function App() {
             {S.MENSAGENS.map((m, i) => {
               const conteudo = (
                 <>
-                  <span className="play-azul">▶</span>
+                  {m.capa
+                    ? <span className="msg-capa"><img src={m.capa} alt={m.titulo} loading="lazy" /></span>
+                    : <span className="play-azul">▶</span>}
                   <span className="txt">
                     <span className="t">{m.titulo}</span>
                     <span className="m">{m.meta}</span>
@@ -503,7 +514,9 @@ export default function App() {
                 <p>{m.desc}</p>
                 {m.lider && (
                   <div className="min-lider">
-                    <span className="avatar">{iniciais(m.lider)}</span>
+                    {m.foto
+                      ? <span className="avatar avatar-foto"><img src={m.foto} alt={m.lider} loading="lazy" /></span>
+                      : <span className="avatar">{iniciais(m.lider)}</span>}
                     <span className="quem">
                       <span className="rot">Liderança</span>
                       <span className="nm">{m.lider}</span>
@@ -559,7 +572,56 @@ export default function App() {
         </div>
       </section>
 
-      <section id="celulas" className="sec">
+      {eventos.length > 0 && (
+        <section id="eventos" className="sec">
+          <div className="container">
+            <div className="cab-flex">
+              <div>
+                <div className="chapeu">Conheça nossa agenda</div>
+                <h2 className="titulo" style={{ maxWidth: '22ch', marginBottom: 0 }}>O que vem por aí na Promessa</h2>
+              </div>
+              <div className="fotos-setas">
+                <button onClick={() => rolarEventos(-1)} aria-label="Voltar">‹</button>
+                <button onClick={() => rolarEventos(1)} aria-label="Avançar">›</button>
+              </div>
+            </div>
+            <div className="trilhaEventos" ref={refEventos}>
+              {eventos.map((ev, i) => {
+                const d = new Date(ev.data + 'T00:00:00')
+                const dataTxt = `${String(d.getDate()).padStart(2, '0')} ${MESES_A[d.getMonth()]}`
+                const corpo = ev.capa ? (
+                  <>
+                    <img src={ev.capa} alt={ev.titulo} loading="lazy" />
+                    <div className="scrim"></div>
+                    <div className="ev-sobre-foto">
+                      <div className="ev-data-pill">{dataTxt}{ev.hora ? ` · ${ev.hora}` : ''}</div>
+                      <div className="ev-titulo">{ev.titulo}</div>
+                      {ev.ministerio && <div className="ev-min">{ev.ministerio}</div>}
+                    </div>
+                  </>
+                ) : (
+                  <div className="ev-sem-foto">
+                    <div className="ev-data-bloco">
+                      <div className="dia">{String(d.getDate()).padStart(2, '0')}</div>
+                      <div className="mes">{MESES_A[d.getMonth()]}</div>
+                    </div>
+                    <div className="ev-titulo-escuro">{ev.titulo}</div>
+                    <div className="ev-detalhes">
+                      {DIAS_SEM[d.getDay()]}{ev.hora ? ` · ${ev.hora}` : ''}
+                      {ev.ministerio && <span className="ev-min-selo">{ev.ministerio}</span>}
+                    </div>
+                  </div>
+                )
+                return ev.link
+                  ? <a key={i} href={ev.link} target="_blank" rel="noopener noreferrer" className="evento-card">{corpo}</a>
+                  : <div key={i} className="evento-card">{corpo}</div>
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section id="celulas" className="sec sec-alt">
         <div className="container">
           <div className="chapeu">Células nos lares</div>
           <div className="cab-flex" style={{ marginTop: 14 }}>
@@ -583,8 +645,8 @@ export default function App() {
             ))}
           </div>
           <div className="cel-cta">
-            <a href="#participe" onClick={() => abrirAba('celula')} className="btn-azul">Cadastrar uma célula</a>
-            <span>É líder de célula? Cadastre os dados e ela aparece aqui no site.</span>
+            <a href={S.LINKS.faleConosco} target="_blank" rel="noopener noreferrer" className="btn-azul">Quero participar de uma célula</a>
+            <span>Chame no WhatsApp e a gente te apresenta a célula mais perto de você.</span>
           </div>
         </div>
       </section>
@@ -629,24 +691,6 @@ export default function App() {
                   <label className="campo">
                     <span>Conte um pouco sobre você</span>
                     <textarea name="Mensagem" rows="4" placeholder="Experiência, disponibilidade, o que gosta de fazer…"></textarea>
-                  </label>
-                </>
-              )}
-              {aba === 'celula' && (
-                <>
-                  <div className="linha-2">
-                    {inp('Nome da célula', { name: 'Nome da célula', required: true, placeholder: 'Ex.: Célula Vida Nova' })}
-                    {inp('Líder / anfitrião', { name: 'Líder', required: true, placeholder: 'Quem recebe na casa' })}
-                  </div>
-                  {inp('Endereço completo', { name: 'Endereço', required: true, placeholder: 'Rua, número, bairro, ponto de referência' })}
-                  <div className="linha-3">
-                    {inp('Dia e horário', { name: 'Dia e horário', required: true, placeholder: 'Ex.: quinta, 19h30' })}
-                    {inp('Público', { name: 'Público', placeholder: 'Famílias, jovens, crianças…' })}
-                    {inp('WhatsApp de contato', { name: 'WhatsApp', required: true, placeholder: '(21) 90000-0000' })}
-                  </div>
-                  <label className="campo">
-                    <span>Observações</span>
-                    <textarea name="Observações" rows="3" placeholder="Alguma informação que ajude quem vai visitar"></textarea>
                   </label>
                 </>
               )}
@@ -774,8 +818,10 @@ export default function App() {
                 ))}
               </div>
               <div className="foot-col">
-                <div className="t">Links</div>
+                <div className="t">Redes e Links</div>
                 <a href={S.LINKS.instagram} target="_blank" rel="noopener noreferrer">Instagram</a>
+                <a href={S.LINKS.facebook} target="_blank" rel="noopener noreferrer">Facebook</a>
+                <a href={S.LINKS.youtubeDenominacao} target="_blank" rel="noopener noreferrer">YouTube · TV Viva Promessa</a>
                 <a href="https://promessistas.org/" target="_blank" rel="noopener noreferrer">Promessistas Brasil</a>
                 <a href="https://instagram.com/promessistas" target="_blank" rel="noopener noreferrer">@promessistas</a>
                 <a href={S.LINKS.areaMembros} target="_blank" rel="noopener noreferrer">Área de Membros</a>

@@ -321,6 +321,29 @@ h2.titulo{font-family:var(--sora);font-weight:700;font-size:clamp(30px,4vw,50px)
 .form-ok h3{font-family:var(--sora);font-weight:700;font-size:24px;color:var(--grafite);margin-bottom:8px}
 .form-ok p{font-size:15.5px;color:var(--corpo);max-width:46ch;margin:0 auto 22px}
 
+/* ── Eventos (Conheça nossa agenda) ── */
+.trilhaEventos{display:flex;gap:14px;margin-top:32px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px;scrollbar-width:none;-ms-overflow-style:none}
+.trilhaEventos::-webkit-scrollbar{display:none}
+.evento-card{flex:0 0 clamp(240px,30vw,300px);scroll-snap-align:start;position:relative;border-radius:20px;overflow:hidden;aspect-ratio:4/5;background:#fff;border:1px solid var(--linha);display:block;transition:transform .25s,border-color .25s}
+a.evento-card:hover{transform:translateY(-4px);border-color:var(--azul-hover)}
+.evento-card>img{width:100%;height:100%;object-fit:cover}
+.evento-card .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(40,48,52,0) 40%,rgba(40,48,52,.85));pointer-events:none}
+.ev-sobre-foto{position:absolute;left:18px;right:18px;bottom:18px}
+.ev-data-pill{display:inline-block;background:rgba(255,255,255,.18);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:99px;padding:5px 12px}
+.ev-titulo{font-family:var(--sora);font-weight:700;font-size:19px;color:#fff;line-height:1.2;margin-top:10px}
+.ev-min{font-size:13px;color:rgba(255,255,255,.85);margin-top:4px}
+.ev-sem-foto{height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:22px;gap:8px}
+.ev-data-bloco{width:64px;border-radius:14px;background:var(--azul-bg);color:var(--azul-esc);text-align:center;padding:10px 0;margin-bottom:auto}
+.ev-data-bloco .dia{font-family:var(--sora);font-weight:700;font-size:26px;line-height:1}
+.ev-data-bloco .mes{font-size:11px;font-weight:800;letter-spacing:.14em}
+.ev-titulo-escuro{font-family:var(--sora);font-weight:700;font-size:19px;color:var(--grafite);line-height:1.2;text-wrap:balance}
+.ev-detalhes{font-size:13.5px;color:var(--corpo2);display:flex;flex-wrap:wrap;gap:8px;align-items:center;text-transform:capitalize}
+.ev-min-selo{font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--azul-bg);color:var(--azul-esc);border-radius:8px;padding:4px 8px}
+.avatar-foto{overflow:hidden;padding:0 !important}
+.avatar-foto img{width:100%;height:100%;object-fit:cover}
+.msg-capa{flex:0 0 auto;width:56px;height:56px;border-radius:12px;overflow:hidden;background:var(--ph);display:block}
+.msg-capa img{width:100%;height:100%;object-fit:cover}
+
 /* ── Contribua ── */
 .pix-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:24px;padding:clamp(24px,3vw,34px);backdrop-filter:blur(8px)}
 .pix-rotulo{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--azul-claro)}

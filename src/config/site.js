@@ -11,6 +11,8 @@ export const PADROES = {
     faleConosco: zap('5521970250597', 'Olá! Vim pelo site da Promessa Lago dos Peixes.'),
     tesouraria: zap('5521982936289', 'Olá! Segue o comprovante da minha contribuição.'),
     instagram: 'https://instagram.com/promessalagodospeixes',
+    facebook: 'https://facebook.com/promessalagodospeixes',
+    youtubeDenominacao: 'https://www.youtube.com/@tvvivapromessa',
     pregacoes: '', // vazio = botão "Ver todas as pregações" fica escondido
     email: 'mailto:iaplagodospeixes@gmail.com',
     areaMembros: 'https://gestao.promessalagodospeixes.com.br',
@@ -98,6 +100,21 @@ export const PADROES = {
 
 export const OPCOES_MINISTERIO_EXTRA = ['Ainda não sei — me ajudem a escolher']
 
+// Busca os próximos eventos da agenda (só "Igreja Local", de hoje em diante).
+export async function carregarEventos() {
+  try {
+    const hoje = new Date().toLocaleDateString('sv') // AAAA-MM-DD local
+    const r = await fetch(
+      `${SUPABASE_URL}/rest/v1/agenda?tipo=eq.Igreja%20Local&data=gte.${hoje}&select=data,hora,titulo,descricao,ministerio,link,capa&order=data.asc,hora.asc&limit=24`,
+      { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` } },
+    )
+    if (!r.ok) return []
+    return await r.json()
+  } catch (e) {
+    return []
+  }
+}
+
 // Busca o que foi salvo no editor do sistema de gestão e mescla nos padrões.
 export async function carregarConfig() {
   try {
@@ -116,6 +133,7 @@ export async function carregarConfig() {
       ...(l.whatsPastor ? { faleConosco: zap(l.whatsPastor, 'Olá! Vim pelo site da Promessa Lago dos Peixes.') } : {}),
       ...(l.whatsTesouraria ? { tesouraria: zap(l.whatsTesouraria, 'Olá! Segue o comprovante da minha contribuição.') } : {}),
       ...(l.instagram ? { instagram: l.instagram } : {}),
+      ...(l.facebook ? { facebook: l.facebook } : {}),
       pregacoes: l.pregacoes || '',
       ...(l.email ? { email: `mailto:${l.email}` } : {}),
     }
@@ -150,7 +168,7 @@ export async function carregarConfig() {
     }
     if (Array.isArray(c.mensagens) && c.mensagens.length) {
       out.MENSAGENS = c.mensagens.filter((m) => m.titulo).map((m) => ({
-        url: m.url || '', titulo: m.titulo, meta: m.meta || '',
+        url: m.url || '', titulo: m.titulo, meta: m.meta || '', capa: m.capa || '',
       }))
     }
     if (Array.isArray(c.celulas) && c.celulas.length) {
@@ -161,7 +179,7 @@ export async function carregarConfig() {
     }
     if (Array.isArray(c.ministerios) && c.ministerios.length) {
       out.MINISTERIOS = c.ministerios.filter((m) => m.nome).map((m, i) => ({
-        n: String(i + 1).padStart(2, '0'), nome: m.nome, lider: m.lider || '', desc: m.desc || '',
+        n: String(i + 1).padStart(2, '0'), nome: m.nome, lider: m.lider || '', desc: m.desc || '', foto: m.foto || '',
       }))
     }
     return out
