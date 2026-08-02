@@ -20,7 +20,7 @@ export const PADROES = {
     mapsEmbed: 'https://www.google.com/maps?q=Estrada+Austin-Queimados,+250,+Austin,+Nova+Igua%C3%A7u+-+RJ,+26086-295&output=embed',
   },
   TEXTOS: {
-    badge: 'Austin · Nova Iguaçu / RJ · desde 1988',
+    badge: 'Austin · Nova Iguaçu / RJ · desde 1988', // linha abaixo do nome, no topo do site
     heroTitulo: 'Aqui você não é visita. É',
     heroDestaque: 'esperado',
     heroSub: 'Somos a Promessa Lago dos Peixes: uma igreja viva, jovem e de portas abertas, que existe para cuidar, amar e priorizar pessoas.',

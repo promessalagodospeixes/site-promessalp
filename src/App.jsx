@@ -203,7 +203,7 @@ export default function App() {
             <img src="/logo.png" alt="Promessa Lago dos Peixes" />
             <span className="marca-txt">
               <span className="marca-nome brandName">Promessa Lago dos Peixes</span>
-              <span className="marca-sub brandSub">Austin · Nova Iguaçu / RJ</span>
+              <span className="marca-sub brandSub">{T.badge}</span>
             </span>
           </a>
           <button
@@ -250,10 +250,6 @@ export default function App() {
         </div>
         <div className="hero-scrim"></div>
         <div className="hero-in container">
-          <div className="hero-badge">
-            <span className="ponto"></span>
-            <span>{T.badge}</span>
-          </div>
           <h1>{T.heroTitulo} <em>{T.heroDestaque}</em>.</h1>
           <p className="hero-sub">{T.heroSub}</p>
           <div className="hero-cta">
