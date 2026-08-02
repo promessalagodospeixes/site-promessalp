@@ -639,6 +639,7 @@ export default function App() {
                 <div className="cel-linhas">
                   <div><span className="rot">Quando</span><span className="forte">{c.horario}</span></div>
                   <div><span className="rot">Onde</span><span>{c.endereco}</span></div>
+                  {c.liderCelula && <div><span className="rot">Líder</span><span>{c.liderCelula}</span></div>}
                   <div><span className="rot">Anfitrião</span><span>{c.lider}</span></div>
                 </div>
                 <a href={c.mapa} target="_blank" rel="noopener noreferrer" className="cel-mapa">Ver no mapa →</a>
