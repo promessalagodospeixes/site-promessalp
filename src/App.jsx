@@ -90,6 +90,7 @@ export default function App() {
   const [sobreIdx, setSobreIdx] = useState(0)
   const [eventos, setEventos] = useState([])
   const refEventos = useRef(null)
+  const refMsgs = useRef(null)
   const pixTimer = useRef(null)
   const capaTimer = useRef(null)
   const refReels = useRef(null)
@@ -118,6 +119,10 @@ export default function App() {
   const irSobre = (i) => setSobreIdx(((i % S.FOTOS_SOBRE.length) + S.FOTOS_SOBRE.length) % S.FOTOS_SOBRE.length)
   const rolarReels = (dir) => {
     const el = refReels.current
+    if (el) el.scrollBy({ left: dir * Math.max(240, el.clientWidth * 0.7), behavior: 'smooth' })
+  }
+  const rolarMsgs = (dir) => {
+    const el = refMsgs.current
     if (el) el.scrollBy({ left: dir * Math.max(240, el.clientWidth * 0.7), behavior: 'smooth' })
   }
   const rolarEventos = (dir) => {
@@ -347,22 +352,29 @@ export default function App() {
               <a href={S.LINKS.pregacoes} target="_blank" rel="noopener noreferrer" className="btn-ghost">Ver todas as pregações</a>
             )}
           </div>
-          <div className="msg-grid">
+          <div className="msgs-barra">
+            <span className="fotos-dica">Arraste para o lado ou use as setas</span>
+            <div className="fotos-setas">
+              <button onClick={() => rolarMsgs(-1)} aria-label="Voltar">‹</button>
+              <button onClick={() => rolarMsgs(1)} aria-label="Avançar">›</button>
+            </div>
+          </div>
+          <div className="trilhaReels trilhaMsgs" ref={refMsgs}>
             {S.MENSAGENS.map((m, i) => {
-              const conteudo = (
+              const corpo = (
                 <>
-                  {m.capa
-                    ? <span className="msg-capa"><img src={m.capa} alt={m.titulo} loading="lazy" /></span>
-                    : <span className="play-azul">▶</span>}
-                  <span className="txt">
-                    <span className="t">{m.titulo}</span>
-                    <span className="m">{m.meta}</span>
-                  </span>
+                  {m.capa && <img src={m.capa} alt={m.titulo} loading="lazy" />}
+                  <div className="scrim"></div>
+                  <span className="play">▶</span>
+                  <div className="rodape">
+                    <div className="t">{m.titulo}</div>
+                    <div className="m">{m.meta}</div>
+                  </div>
                 </>
               )
               return m.url
-                ? <a key={i} href={m.url} target="_blank" rel="noopener noreferrer" className="msg-card">{conteudo}</a>
-                : <div key={i} className="msg-card msg-sem-link">{conteudo}</div>
+                ? <a key={i} href={m.url} target="_blank" rel="noopener noreferrer" className="reel-card msg-reel">{corpo}</a>
+                : <div key={i} className="reel-card msg-reel msg-sem-link">{corpo}</div>
             })}
           </div>
           <div className="faixa-denominacao">
