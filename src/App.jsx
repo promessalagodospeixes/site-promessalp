@@ -42,6 +42,12 @@ const ABAS = [
   { k: 'oracao', rotulo: 'Pedido de oração' },
 ]
 
+// Posição da foto: enquadramento manual (px/py em %) ou atalhos topo/base
+function posFoto(f, padrao = 'center') {
+  if (f && f.px != null && f.py != null) return `${f.px}% ${f.py}%`
+  return { topo: 'center top', base: 'center bottom' }[f?.pos] || padrao
+}
+
 function iniciais(nome) {
   return (nome || '?').split(/\s+e\s+|\s+/).filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toUpperCase()
 }
@@ -236,7 +242,7 @@ export default function App() {
               className="hero-camada"
               style={{
                 backgroundImage: `url("${f.src || f}")`,
-                backgroundPosition: { topo: 'center top', base: 'center bottom' }[f.pos] || 'center 38%',
+                backgroundPosition: posFoto(f, 'center 38%'),
                 opacity: i === capa ? 1 : 0,
               }}
             ></div>
@@ -449,7 +455,7 @@ export default function App() {
             <div className="familia-carrossel retrato-carrossel">
               {S.FOTOS_SOBRE.map((f, i) => (
                 <div key={i} className="familia-foto" style={{ opacity: i === sobreIdx ? 1 : 0, pointerEvents: i === sobreIdx ? 'auto' : 'none' }}>
-                  <img src={f.src} alt="Promessa Lago dos Peixes" loading="lazy" style={{ objectPosition: { topo: 'center top', base: 'center bottom' }[f.pos] || 'center' }} />
+                  <img src={f.src} alt="Promessa Lago dos Peixes" loading="lazy" style={{ objectPosition: posFoto(f) }} />
                 </div>
               ))}
               {S.FOTOS_SOBRE.length > 1 && (
@@ -491,7 +497,7 @@ export default function App() {
             <div className="familia-carrossel">
               {S.FOTOS_FAMILIA.map((f, i) => (
                 <div key={i} className="familia-foto" style={{ opacity: i === familia ? 1 : 0, pointerEvents: i === familia ? 'auto' : 'none' }}>
-                  <img src={f.src} alt={f.alt} loading="lazy" style={{ objectPosition: { topo: 'center top', base: 'center bottom' }[f.pos] || 'center' }} />
+                  <img src={f.src} alt={f.alt} loading="lazy" style={{ objectPosition: posFoto(f) }} />
                 </div>
               ))}
               <div className="familia-controles">

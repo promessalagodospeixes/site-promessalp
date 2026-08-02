@@ -107,10 +107,10 @@ Em 27 de junho de 2026, em Assembleia Extraordinária convocada pelo Pastor Gabr
     referencia: 'Referência: Mercado do Beto na esquina, ao lado da Águas do Rio.',
   },
   HORARIOS: [
-    { dia: 'Sábado', hora: '9h', desc: 'Escola Bíblica' },
-    { dia: 'Sábado', hora: '10h30', desc: 'Culto da Família' },
     { dia: 'Domingo', hora: '18h', desc: 'Culto de Celebração' },
     { dia: 'Terça', hora: '19h30', desc: 'Reunião de oração' },
+    { dia: 'Sábado', hora: '9h', desc: 'Escola Bíblica' },
+    { dia: 'Sábado', hora: '10h30', desc: 'Culto da Família' },
   ],
   FOTOS_CAPA: [{ src: '/foto-comunidade.jpg', pos: 'centro' }, { src: '/foto-batismo.jpg', pos: 'centro' }],
   FOTOS_SOBRE: [{ src: '/foto-batismo.jpg', pos: 'centro' }],
