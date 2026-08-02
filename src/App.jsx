@@ -93,6 +93,10 @@ export default function App() {
   const T = S.TEXTOS
 
   useEffect(() => {
+    // F5 sempre volta ao topo (sem restaurar posição nem âncora antiga)
+    if ('scrollRestoration' in window.history) window.history.scrollRestoration = 'manual'
+    if (window.location.hash) window.history.replaceState(null, '', window.location.pathname)
+    window.scrollTo(0, 0)
     carregarConfig().then(setS)
     carregarEventos().then(setEventos)
     return () => clearTimeout(pixTimer.current)
