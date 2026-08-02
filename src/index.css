@@ -4,7 +4,7 @@
 :root{
   --papel:#F4F3F1; --papel-alt:#E9E7E3; --branco:#FFFFFF; --campo:#FAFAF8;
   --linha:#DEDBD6; --linha-suave:#E8E6E2; --ph:#DAD7D2; --borda-ghost:#D0CDC7;
-  --tinta:#22272A; --grafite:#2F3538; --corpo:#5A6165; --corpo2:#646B6F; --fraco:#949A9D;
+  --tinta:#22272A; --grafite:#2F3538; --corpo:#5A6165; --corpo2:#646B6F; --fraco:#6B7276;
   --cinza-sec:#5A656C; --cinza-foot:#4E585E; --cinza-video:#525D63;
   --azul:#1E6E96; --azul-esc:#14587F; --azul-bg:#E7F0F6; --azul-claro:#DCEBF4; --azul-hover:#A5C9DC;
   --sora:'Sora',sans-serif; --jakarta:'Plus Jakarta Sans',system-ui,sans-serif; --serif:'Instrument Serif',Georgia,serif;
@@ -91,7 +91,7 @@ h2.titulo{font-family:var(--sora);font-weight:700;font-size:clamp(30px,4vw,50px)
 .drawer-ctas{display:flex;flex-direction:column;gap:10px;margin-top:14px}
 .drawer-ctas .cta-azul{text-align:center;background:var(--azul);color:#fff;font-weight:700;font-size:15.5px;padding:15px;border-radius:99px}
 .drawer-ctas .cta-grafite{text-align:center;background:var(--grafite);color:#fff;font-weight:700;font-size:15.5px;padding:15px;border-radius:99px}
-@media (max-width:1080px){
+@media (max-width:1180px){
   .navDesk{display:none !important}
   .navBurger{display:inline-flex !important}
   .topo-in{flex-wrap:nowrap !important}
@@ -109,7 +109,7 @@ h2.titulo{font-family:var(--sora);font-weight:700;font-size:clamp(30px,4vw,50px)
 .hero-in{position:relative;width:100%;padding-top:120px;padding-bottom:44px}
 .hero-badge{display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(8px);padding:8px 16px;border-radius:99px;animation:subir .7s ease both}
 .hero-badge .ponto{width:7px;height:7px;border-radius:99px;background:var(--azul);box-shadow:0 0 0 5px rgba(30,110,150,.28);animation:pulsar 2.4s ease-in-out infinite}
-.hero-badge span:last-child{font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:#F3E7D5}
+.hero-badge span:last-child{font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--azul-claro)}
 .hero h1{font-family:var(--sora);font-weight:700;font-size:clamp(40px,7.4vw,88px);line-height:.98;letter-spacing:-.035em;color:#fff;margin:24px 0 0;max-width:19ch;text-wrap:balance;animation:subir .8s .06s ease both}
 .hero h1 em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--azul-claro);letter-spacing:-.01em}
 .hero-sub{margin:22px 0 0;max-width:52ch;font-size:clamp(16px,1.5vw,19.5px);color:rgba(255,255,255,.86);animation:subir .8s .12s ease both}
@@ -393,3 +393,112 @@ footer{background:var(--cinza-foot);color:rgba(255,255,255,.88);padding:clamp(44
 .foot-col a{color:#fff;font-size:14.5px;font-weight:600}
 .foot-col a:hover{color:var(--azul-claro)}
 .foot-fim{border-top:1px solid rgba(255,255,255,.14);margin-top:34px;padding-top:20px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:12.5px;color:rgba(255,255,255,.8)}
+/* ============================================================
+   PATCH RESPONSIVO — Promessa Lago dos Peixes
+   Cole este bloco NO FIM de src/index.css (nada acima precisa mudar).
+   Corrige: página que não cabe na tela, rodapé irregular,
+   âncoras escondidas sob o header e ajustes de mobile/tablet.
+   ============================================================ */
+
+/* 1 ── Unidades de viewport seguras no celular ─────────────────
+   100vh no mobile inclui a barra do navegador: a tela "não cabe".
+   svh/dvh medem o espaço realmente visível. */
+.hero{min-height:min(92svh,860px)}
+.drawer{max-height:calc(100svh - 78px)}
+.lightbox img{max-height:82svh}
+
+/* 2 ── Âncoras não ficam mais escondidas sob o header sticky */
+[id]{scroll-margin-top:88px}
+
+/* 3 ── Hero cabe na tela (celular) ───────────────────────────── */
+@media (max-width:900px){
+  .hero{min-height:auto}
+  .hero-in{padding-top:84px;padding-bottom:32px}
+  .hero h1{font-size:clamp(32px,8.6vw,52px);max-width:16ch;margin-top:18px}
+  .hero-sub{font-size:15.5px;margin-top:14px;max-width:42ch}
+  .hero-cta{margin-top:22px;gap:10px}
+  .hero-cta>a{flex:1 1 100%;justify-content:center;font-size:15px;padding:15px 20px}
+  .hero-base{margin-top:26px;gap:12px}
+  .hero-horarios{flex:1 1 100%;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .h-item:last-child{grid-column:1 / -1}
+  .hero-controles{width:100%;justify-content:center}
+}
+
+/* 4 ── Hero cabe na tela (notebook 1366×768 e telas baixas) ──── */
+@media (min-width:901px) and (max-height:800px){
+  .hero{min-height:auto}
+  .hero-in{padding-top:104px;padding-bottom:36px}
+  .hero h1{font-size:clamp(38px,5.2vw,62px)}
+  .hero-sub{margin-top:16px}
+  .hero-cta{margin-top:24px}
+  .hero-base{margin-top:30px}
+}
+
+/* 5 ── Rodapé regular (logo + frase alinhados) ───────────────── */
+.foot-in{display:grid;grid-template-columns:minmax(240px,1fr) minmax(0,1.6fr);gap:40px;align-items:start}
+.foot-marca{max-width:36ch;display:flex;flex-direction:column;align-items:flex-start;gap:14px}
+.foot-marca img{height:44px;margin:0;display:block}
+.foot-marca p{margin-top:0;font-size:14.5px;line-height:1.6}
+@media (max-width:860px){
+  .foot-in{grid-template-columns:1fr;gap:28px}
+  .foot-cols{flex:none}
+}
+@media (max-width:520px){
+  .foot-cols{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+  .foot-fim{flex-direction:column;gap:8px}
+}
+
+/* 6 ── Densidade e respiro no celular ────────────────────────── */
+@media (max-width:640px){
+  .sec{padding:clamp(48px,11vw,76px) 0}
+  .sec-agenda{padding:clamp(44px,10vw,68px) 0}
+  h2.titulo{font-size:clamp(26px,7vw,34px);margin:12px 0 14px}
+  .participe-cab .titulo{font-size:clamp(26px,7vw,34px)}
+  .agenda-titulo{font-size:clamp(24px,6.4vw,30px) !important}
+  .par-grande,.par-medio,.par-claro,.apoio{font-size:15.5px}
+  .min-card,.cel-card{padding:20px}
+  .form-card{padding:20px}
+  .faca-parte{padding:22px}
+  .form-rodape{flex-direction:column;align-items:stretch}
+  .form-rodape button{width:100%}
+  .lgpd{max-width:none}
+  .mapa,.mapa iframe{min-height:300px}
+  .abas{gap:6px}
+  .abas button{font-size:13.5px;padding:11px 15px}
+  .hist-corpo blockquote{font-size:18px;padding-left:14px}
+  .selo{font-size:13.5px;padding:7px 13px}
+  .stat .n{font-size:28px}
+}
+@media (max-width:520px){
+  .container,.container-form{padding:0 18px}
+  [id]{scroll-margin-top:76px}
+}
+
+/* 7 ── Trilhas horizontais: cartão maior, sem meia-fatia ─────── */
+.trilhaReels,.trilhaFotos,.trilhaMins,.trilhaEventos{scroll-padding-left:24px}
+@media (max-width:520px){
+  .reel-card{flex:0 0 64vw}
+  .trilhaMins .min-card{flex:0 0 82vw}
+  .evento-card{flex:0 0 72vw}
+  .foto-thumb{flex:0 0 38vw}
+  .trilhaReels,.trilhaFotos,.trilhaMins,.trilhaEventos{scroll-padding-left:18px}
+}
+
+/* 8 ── Grades que ainda podiam estourar em telas estreitas ───── */
+.contato-links{grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.pilares{grid-template-columns:repeat(auto-fit,minmax(min(100%,140px),1fr))}
+.foot-cols{grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr))}
+.hero-horarios{min-width:0}
+.cel-head h3,.msg-card .t,.min-card h3{overflow-wrap:break-word}
+
+/* ── Leva 1 da revisão: alvo de toque 44px nos pontinhos (itens 3.1 e 8.2) ── */
+.hero-controles .pontos{gap:0;padding:0}
+.hero-controles .pontos button{width:44px;height:44px;background:transparent;border:none;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.hero-controles .pontos button::before{content:'';width:7px;height:7px;border-radius:99px;background:rgba(255,255,255,.45);transition:width .3s,background .3s}
+.hero-controles .pontos button.ativo{width:44px}
+.hero-controles .pontos button.ativo::before{width:26px;background:#fff}
+.familia-controles .pontos{gap:0}
+.familia-controles .pontos button{width:44px;height:44px;background:transparent;border:none;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:none}
+.familia-controles .pontos button::before{content:'';width:6px;height:6px;border-radius:99px;background:rgba(255,255,255,.55);box-shadow:0 1px 4px rgba(0,0,0,.35);transition:width .3s,background .3s}
+.familia-controles .pontos button.ativo{width:44px;background:transparent}
+.familia-controles .pontos button.ativo::before{width:22px;background:#fff}

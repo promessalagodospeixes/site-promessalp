@@ -698,8 +698,8 @@ export default function App() {
               {aba === 'ministerio' && (
                 <>
                   <div className="linha-2">
-                    {inp('Seu nome', { name: 'Nome', required: true, placeholder: 'Nome completo' })}
-                    {inp('WhatsApp', { name: 'WhatsApp', required: true, placeholder: '(21) 90000-0000' })}
+                    {inp('Seu nome', { name: 'Nome', required: true, placeholder: 'Nome completo', autoComplete: 'name' })}
+                    {inp('WhatsApp', { name: 'WhatsApp', required: true, placeholder: '(21) 90000-0000', type: 'tel', inputMode: 'tel', autoComplete: 'tel' })}
                   </div>
                   <label className="campo">
                     <span>Ministério em que quero servir</span>
@@ -717,7 +717,7 @@ export default function App() {
               {aba === 'oracao' && (
                 <>
                   <div className="linha-2">
-                    {inp('Seu nome (opcional)', { name: 'Nome', placeholder: 'Pode ser anônimo' })}
+                    {inp('Seu nome (opcional)', { name: 'Nome', placeholder: 'Pode ser anônimo', autoComplete: 'name' })}
                     {inp('Contato para retorno (opcional)', { name: 'Contato', placeholder: 'WhatsApp ou e-mail' })}
                   </div>
                   <label className="campo">
