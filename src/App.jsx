@@ -77,7 +77,17 @@ function Historia({ T }) {
 }
 
 export default function App() {
-  const [S, setS] = useState(PADROES)
+  // Começa com o que foi carregado da última visita (evita mostrar por 1s as fotos padrão antigas)
+  const [S, setS] = useState(() => {
+    try {
+      const cache = JSON.parse(localStorage.getItem('promessa-config-v1') || 'null')
+      if (cache && cache.TEXTOS && cache.FOTOS_CAPA) return cache
+    } catch (e) { /* cache inválido, ignora */ }
+    return PADROES
+  })
+  const [configPronta, setConfigPronta] = useState(() => {
+    try { return !!JSON.parse(localStorage.getItem('promessa-config-v1') || 'null') } catch (e) { return false }
+  })
   const [pixCopiado, setPixCopiado] = useState(false)
   const [menuAberto, setMenuAberto] = useState(false)
   const [capa, setCapa] = useState(0)
@@ -103,7 +113,11 @@ export default function App() {
     if ('scrollRestoration' in window.history) window.history.scrollRestoration = 'manual'
     if (window.location.hash) window.history.replaceState(null, '', window.location.pathname)
     window.scrollTo(0, 0)
-    carregarConfig().then(setS)
+    carregarConfig().then((cfg) => {
+      setS(cfg)
+      setConfigPronta(true)
+      try { localStorage.setItem('promessa-config-v1', JSON.stringify(cfg)) } catch (e) { /* sem espaço, tudo bem */ }
+    })
     carregarEventos().then(setEventos)
     return () => clearTimeout(pixTimer.current)
   }, [])
@@ -236,7 +250,7 @@ export default function App() {
 
       <section id="inicio" className="hero">
         <div className="hero-camadas">
-          {S.FOTOS_CAPA.map((f, i) => (
+          {(configPronta ? S.FOTOS_CAPA : []).map((f, i) => (
             <div
               key={(f.src || f) + i}
               className="hero-camada"
