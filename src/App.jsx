@@ -650,9 +650,8 @@ export default function App() {
                 const dataTxt = `${String(d.getDate()).padStart(2, '0')} ${MESES_A[d.getMonth()]}`
                 const corpo = ev.capa ? (
                   <>
-                    <img src={ev.capa} alt={ev.titulo} loading="lazy" />
-                    <div className="scrim"></div>
-                    <div className="ev-sobre-foto">
+                    <div className="ev-arte"><img src={ev.capa} alt={ev.titulo} loading="lazy" /></div>
+                    <div className="ev-abaixo">
                       <div className="ev-data-pill">{dataTxt}{ev.hora ? ` · ${ev.hora}` : ''}</div>
                       <div className="ev-titulo">{ev.titulo}</div>
                       {ev.ministerio && <div className="ev-min">{ev.ministerio}</div>}
@@ -672,9 +671,10 @@ export default function App() {
                     </div>
                   </div>
                 )
+                const cls = 'evento-card' + (ev.capa ? '' : ' sem-foto')
                 return ev.link
-                  ? <a key={i} href={ev.link} target="_blank" rel="noopener noreferrer" className="evento-card">{corpo}</a>
-                  : <div key={i} className="evento-card">{corpo}</div>
+                  ? <a key={i} href={ev.link} target="_blank" rel="noopener noreferrer" className={cls}>{corpo}</a>
+                  : <div key={i} className={cls}>{corpo}</div>
               })}
             </div>
           </div>
