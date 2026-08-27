@@ -329,14 +329,14 @@ h2.titulo{font-family:var(--sora);font-weight:700;font-size:clamp(30px,4vw,50px)
 /* ── Eventos (Conheça nossa agenda) ── */
 .trilhaEventos{display:flex;gap:14px;margin-top:32px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px;scrollbar-width:none;-ms-overflow-style:none}
 .trilhaEventos::-webkit-scrollbar{display:none}
-.evento-card{flex:0 0 clamp(215px,26vw,260px);scroll-snap-align:start;position:relative;border-radius:20px;overflow:hidden;background:#fff;border:1px solid var(--linha);display:block;transition:transform .25s,border-color .25s}
+.evento-card{flex:0 0 clamp(158px,19vw,190px);scroll-snap-align:start;position:relative;border-radius:20px;overflow:hidden;background:#fff;border:1px solid var(--linha);display:block;transition:transform .25s,border-color .25s}
 .evento-card.sem-foto{aspect-ratio:4/5}
 .ev-arte{display:block;width:100%;aspect-ratio:9/16;background:var(--ph)}
 .ev-arte img{width:100%;height:100%;object-fit:cover;display:block}
-.ev-abaixo{padding:13px 15px 15px}
-.ev-abaixo .ev-data-pill{background:var(--azul-bg);color:var(--azul-esc);border:none;backdrop-filter:none}
-.ev-abaixo .ev-titulo{color:var(--grafite);font-size:17px;margin-top:8px}
-.ev-abaixo .ev-min{color:var(--corpo2);margin-top:3px}
+.ev-abaixo{padding:11px 13px 13px}
+.ev-abaixo .ev-data-pill{background:var(--azul-bg);color:var(--azul-esc);border:none;backdrop-filter:none;font-size:11px;padding:4px 10px}
+.ev-abaixo .ev-titulo{color:var(--grafite);font-size:15px;margin-top:7px}
+.ev-abaixo .ev-min{color:var(--corpo2);font-size:12px;margin-top:2px}
 a.evento-card:hover{transform:translateY(-4px);border-color:var(--azul-hover)}
 .evento-card .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(40,48,52,0) 40%,rgba(40,48,52,.85));pointer-events:none}
 .ev-sobre-foto{position:absolute;left:18px;right:18px;bottom:18px}
@@ -485,7 +485,7 @@ footer{background:var(--cinza-foot);color:rgba(255,255,255,.88);padding:clamp(44
 @media (max-width:520px){
   .reel-card{flex:0 0 64vw}
   .trilhaMins .min-card{flex:0 0 82vw}
-  .evento-card{flex:0 0 72vw}
+  .evento-card{flex:0 0 52vw}
   .foto-thumb{flex:0 0 38vw}
   .trilhaReels,.trilhaFotos,.trilhaMins,.trilhaEventos{scroll-padding-left:18px}
 }
